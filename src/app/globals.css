@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+
+*{
+  /* border: 1px solid blue !important; */
+}
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+} */
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background:#ffffff ;
+  
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  h1 {
+    font-size: 90px;
+    font-weight: 700;
+    line-height: 80px
+  }
+  h2 {
+    font-size: 46px;
+    font-weight: 600;
+  }
+  h3{
+    font-size: 36px;
+    font-weight: 600;
+    color: #17161A;
+    
+  }
+  h4{
+    font-size: 20px;
+    font-weight: 200;  
+  }
+  h5{
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  h6{
+    color: #17161A;
+    font-size: 15px;
+    font-weight: 600;    
+  }
+
+  img{
+    display: inline-block !important;
+
+  } 
+
+  .navbarSelects{
+    padding-right: 28px !important;
+  }
+  
+
+  @media screen and (max-width: 576px){
+    h1{
+      font-size: 50px;
+      line-height: normal;
+    }
+    h3{
+      font-size: 25px;
+    }
+    h4{
+      font-size: 15px;
+    }
+  }
+  /* ... */
+}
+@layer components {
+  .cardzila {
+    background-color: theme('colors.black');
+    border-radius: theme('borderRadius.lg');
+    padding: theme('spacing.6');
+    box-shadow: theme('boxShadow.xl');
+  }
+  .BlueButton{
+    background-color: #4E43F1;
+    padding: 15px 40px;
+    color: #ffffff;
+    border-radius: 4px;
+  }
+  .whiteButton{
+    border: 2px solid #4E43F1;
+    background-color: white;
+    padding: 15px 40px;
+    color: #4E43F1;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .HeroSection{
+    background-image: url(./assets/images/hero\ background.png);
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .newInput{
+    border-radius: 8px;
+    border: 1px 0px 0px 0px;
+    border: 1px solid #4E43F126;
+    width: 100%;
+    padding: 13px 20px;
+    margin-top: 10px;
+    background-color: transparent;
+  }
+  .borderBottom{
+    border-bottom: 1px solid #17161A;
+  }
+  .subHeadingText{
+    font-weight: 500;
+    
+  }
+}
