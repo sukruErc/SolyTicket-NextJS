@@ -110,7 +110,11 @@ export const getRandomColor = (): string => {
 };
 
 export const isValidIBAN = (input: string) => {
-  var CODE_LENGTHS = {
+
+  const iban = input.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const code = iban.match(/^([A-Z]{2})(\d{2})([A-Z\d]+)$/);
+
+  if (!code || iban.length !== {
     AD: 24,
     AE: 23,
     AT: 20,
@@ -188,12 +192,7 @@ export const isValidIBAN = (input: string) => {
     VA: 22,
     VG: 24,
     XK: 20,
-  };
-
-  const iban = input.toUpperCase().replace(/[^A-Z0-9]/g, "");
-  const code = iban.match(/^([A-Z]{2})(\d{2})([A-Z\d]+)$/);
-
-  if (!code || iban.length !== CODE_LENGTHS[code[1]]) {
+  }[code[1]]) {
     return false;
   }
 

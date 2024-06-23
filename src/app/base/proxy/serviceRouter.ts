@@ -9,8 +9,8 @@ export class ServiceRouter {
 
   public static getServiceUrl = (): string => {
     // return process.env.NEXT_PUBLIC_ENDPOINT_BASE!;
-    // return "http://localhost:7113/api/";
+    return "http://localhost:3500/v1/";
 
-    return "https://cosmorateapi.stoneity.com/api/";
+    // return "https://cosmorateapi.stoneity.com/api/";
   };
 }

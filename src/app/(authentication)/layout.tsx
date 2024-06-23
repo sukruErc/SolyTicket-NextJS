@@ -1,15 +1,15 @@
-import { MainNavbar } from "@/app/components/Base/MainNavbar"
-import Footer from "@/app/components/Base/Footer"
+import Footer from "@/app/components/Base/Footer";
+import MainNavbar from "../components/Base/MainNavbar";
 
 export default function EventsLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <>
-      <MainNavbar/>
+      <MainNavbar />
       <section>{children}</section>
     </>
-  )
+  );
 }

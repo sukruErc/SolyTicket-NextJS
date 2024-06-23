@@ -1,64 +1,244 @@
-'use client'
-import React from 'react'
+"use client";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import Logo from "@/app/assets/svg/solyticket_logo.svg";
-import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation'
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { AuthApi } from "@/app/api/authentication";
+import { jwtDecode } from "jwt-decode";
+import { ClientStorage } from "@/app/base/storage";
+import { ConfigHelper } from "@/app/base/constants";
+import { withoutToken } from "@/app/hoc/withoutToken";
+import Swal from "sweetalert2";
 
-
-const login = () => {
-    const pathname = usePathname()
-    return (
-        <>
-            <div className="container mx-auto flex justify-center px-5 my-5 sm:my-20">
-                <div className='bg-[#F6F6FE] rounded-[26px] w-full  md:w-9/12 lg:w-6/12'>
-                    <div className='px-6 sm:px-16 py-20 text-center mx-auto'>
-                        <div>
-                            <Image src={Logo} alt='' className='block' />
-                        </div>
-                        <h5>Login</h5>
-                        <p>Please login to your account</p>
-
-                        <form action="" className='text-start my-8'>
-                            <div className="mb-5">
-                                <h6>
-                                    <label htmlFor="EmailAddress" className="form-label">Email</label>
-                                </h6>
-                                <input type="email" className="newInput" id="EmailAddress" aria-describedby="emailHelp" placeholder='Username or email' />
-
-                            </div>
-                            <div className="mb-5">
-                                <h6>
-                                    <label htmlFor="LoginPassword" className="form-label">Password</label>
-                                </h6>
-
-                                <input type="password" className="newInput" id="LoginPassword" aria-describedby="emailHelp" placeholder='Password' />
-
-                            </div>
-                            <div className='text-end'>
-                                <h6><a href="">Forgot Password?</a></h6>
-                            </div>
-                            <div className='my-8'>
-                                <button className='BlueButton w-full' >Login</button>
-                            </div>
-                        </form>
-
-                        <div>
-                            <p>Don’t Have an Account? <span className='font-bold'><Link className={`link ${pathname === '/signup' ? 'active' : ''}`} href="/signup">
-                                Register
-                            </Link></span></p>
-
-                            
-
-                        </div>
-
-
-
-                    </div>
-                </div>
-            </div>
-        </>
-    )
+interface LoginModel {
+  email: string;
+  password: string;
 }
 
-export default login
+const validatePassword = (password: string): string => {
+  const minLength = 8;
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/;
+
+  if (password.length < minLength) {
+    return `Şifre en az ${minLength} karakter uzunluğunda olmalıdır.`;
+  }
+
+  if (!regex.test(password)) {
+    return "Şifre en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter içermelidir.";
+  }
+
+  return "";
+};
+
+const Login: React.FC = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [formData, setFormData] = useState<LoginModel>({
+    email: "",
+    password: "",
+  });
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setIsFormValid(formData.email !== "" && formData.password !== "");
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (formData.email && formData.password) {
+      const authApi = new AuthApi({});
+      const res = await authApi.login(formData);
+      if (res.success && res.data) {
+        const token = res.data as any;
+        const decoded: any = jwtDecode(token);
+
+        ClientStorage.setItem(ConfigHelper.SOLY_USER_ROLE, decoded.role);
+        ClientStorage.setItem(
+          ConfigHelper.SOLY_USER_TOKEN_CREATE_TIME,
+          new Date().getTime()
+        );
+        ClientStorage.setItem(ConfigHelper.SOLY_USERNAME, decoded.name);
+        ClientStorage.setItem(ConfigHelper.SOLY_USER_ID, decoded.userId);
+        router.push("/");
+      }
+    } else {
+      alert("Lütfen tüm alanları doldurun.");
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    const { value: email } = await Swal.fire({
+      title: "Şifreyi Yenile",
+      input: "email",
+      inputLabel: "Email adresinizi girin",
+      inputPlaceholder: "Email adresiniz",
+      showCancelButton: true,
+      confirmButtonText: "Gönder",
+      cancelButtonText: "İptal",
+    });
+
+    if (email) {
+      const authApi = new AuthApi({});
+      const emailResponse = await authApi.requestPasswordReset(email);
+
+      if (emailResponse.success) {
+        const { value: formValues } = await Swal.fire({
+          title: "Yeni Şifre Belirleyin",
+          html:
+            '<input id="swal-input1" class="swal2-input" placeholder="Yeni şifre" type="password">' +
+            '<input id="swal-input2" class="swal2-input" placeholder="Şifreyi onaylayın" type="password">',
+          focusConfirm: false,
+          preConfirm: () => {
+            return [
+              (document.getElementById("swal-input1") as HTMLInputElement)
+                .value,
+              (document.getElementById("swal-input2") as HTMLInputElement)
+                .value,
+            ];
+          },
+          showCancelButton: true,
+          confirmButtonText: "Gönder",
+          cancelButtonText: "İptal",
+        });
+
+        if (formValues) {
+          const [newPassword, confirmPassword] = formValues;
+          const passwordValidationMessage = validatePassword(newPassword);
+
+          if (passwordValidationMessage) {
+            Swal.fire("Hata", passwordValidationMessage, "error");
+            return;
+          }
+
+          if (newPassword === confirmPassword) {
+            const passwordResponse = await authApi.resetPassword(
+              email,
+              emailResponse?.data?.resetToken ?? "",
+              newPassword
+            );
+            if (passwordResponse.success && passwordResponse.data) {
+              const token = passwordResponse.data as any;
+
+              const decoded: any = jwtDecode(token);
+
+              ClientStorage.setItem(ConfigHelper.SOLY_USER_ROLE, decoded.role);
+              ClientStorage.setItem(ConfigHelper.SOLY_USER_ID, decoded.userId);
+              ClientStorage.setItem(ConfigHelper.SOLY_USERNAME, decoded.name);
+              ClientStorage.setItem(
+                ConfigHelper.SOLY_USER_TOKEN_CREATE_TIME,
+                new Date().getTime()
+              );
+              router.push("/");
+
+              Swal.fire(
+                "Başarılı!",
+                "Şifreniz başarıyla değiştirildi.",
+                "success"
+              );
+            } else {
+              Swal.fire(
+                "Hata",
+                "Şifre değiştirme işlemi başarısız oldu.",
+                "error"
+              );
+            }
+          } else {
+            Swal.fire("Hata", "Şifreler eşleşmiyor.", "error");
+          }
+        }
+      } else {
+        Swal.fire("Hata", "Email gönderimi başarısız oldu.", "error");
+      }
+    }
+  };
+
+  return (
+    <>
+      <div className="container mx-auto flex justify-center px-5 my-5 sm:my-20">
+        <div className="bg-[#F6F6FE] rounded-[26px] w-full md:w-9/12 lg:w-6/12">
+          <div className="px-6 sm:px-16 py-20 text-center mx-auto">
+            <div>
+              <Image src={Logo} alt="" className="block" />
+            </div>
+            <h5>Giriş</h5>
+            <p>Lütfen hesabınıza giriş yapın</p>
+
+            <form onSubmit={handleSubmit} className="text-start my-8">
+              <div className="mb-5">
+                <h6>
+                  <label htmlFor="EmailAddress" className="form-label">
+                    Email
+                  </label>
+                </h6>
+                <input
+                  type="email"
+                  className="newInput"
+                  id="EmailAddress"
+                  aria-describedby="emailHelp"
+                  placeholder="Kullanıcı adı veya email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="mb-5">
+                <h6>
+                  <label htmlFor="LoginPassword" className="form-label">
+                    Şifre
+                  </label>
+                </h6>
+                <input
+                  type="password"
+                  className="newInput"
+                  id="LoginPassword"
+                  aria-describedby="emailHelp"
+                  placeholder="Şifre"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="text-end">
+                <h6>
+                  {/* <a href="#" onClick={handleForgotPassword}>
+                    Şifremi Unuttum?
+                  </a> */}
+                </h6>
+              </div>
+              <div className="my-8">
+                <button
+                  className={`BlueButton w-full ${
+                    isFormValid ? "" : "bg-gray-400 cursor-not-allowed"
+                  }`}
+                  type="submit"
+                  disabled={!isFormValid}
+                >
+                  Giriş
+                </button>
+              </div>
+            </form>
+
+            <div>
+              <p>
+                Hesabınız yok mu?{" "}
+                <span className="font-bold">
+                  <Link
+                    className={`link ${pathname === "/signup" ? "active" : ""}`}
+                    href="/signup"
+                  >
+                    Kayıt Ol
+                  </Link>
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default withoutToken(Login);

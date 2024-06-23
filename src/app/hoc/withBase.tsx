@@ -1,33 +1,78 @@
 import React from "react";
-import { useAppDispatch } from "@/redux/app/hooks";
-import { setUserContext } from "@/redux/slices/user-context";
-import { ClientStorage } from "@/base/storage";
-import { ConfigHelper } from "@/base/constants";
-import { clearLoginStorage } from "@/base/utils/proxyUtils";
-import JwtDecode from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
+import { useAppDispatch } from "../../../redux/app/hooks";
+import { ClientStorage } from "../base/storage";
+import { ConfigHelper } from "../base/constants";
+import { setUserContext } from "../../../redux/slices/user-context";
+import { clearLoginStorage } from "../base/utils/proxyUtils";
+import { UserRoleEnum } from "../base/models/common-models";
 
-const withBase = (WrappedComponent: any) => ({ ...props }) => {
-  const dispatch = useAppDispatch();
+const withBase = (WrappedComponent: any) => {
+  const WithBaseComponent = (props: any) => {
+    const dispatch = useAppDispatch();
 
-  React.useEffect(() => {
-    const token = ClientStorage.getItem(ConfigHelper.COSMORATE_USER_TOKEN);
+    React.useEffect(() => {
+      const userId = ClientStorage.getItem(ConfigHelper.SOLY_USER_ID);
+      const role = ClientStorage.getItem(ConfigHelper.SOLY_USER_ROLE);
+      const username = ClientStorage.getItem(ConfigHelper.SOLY_USERNAME);
+      const expiredAt = ClientStorage.getItem(
+        ConfigHelper.SOLY_USER_TOKEN_CREATE_TIME
+      );
 
-    if (!token) {
-      return;
-    }
+      if (!userId && !expiredAt) {
+        dispatch(
+          setUserContext({
+            id: "",
+            role: UserRoleEnum.Customer,
+            username: "",
+          })
+        );
+        return;
+      }
 
-    const decoded: any = JwtDecode(token);
+      try {
+        if (expiredAt * 1000 > new Date().getTime()) {
+          dispatch(
+            setUserContext({
+              id: userId,
+              role: role,
+              username: username,
+            })
+          );
+        } else {
+          clearLoginStorage();
+          dispatch(
+            setUserContext({
+              id: "",
+              role: UserRoleEnum.Customer,
+              username: "",
+            })
+          );
+        }
+      } catch (error) {
+        clearLoginStorage();
+        dispatch(
+          setUserContext({
+            id: "",
+            role: UserRoleEnum.Customer,
+            username: "",
+          })
+        );
+      }
+    }, [dispatch]);
 
-    // Check token expiration
-    if (decoded && decoded.exp && (decoded.exp * 1000) > (new Date().getTime())) {
-      dispatch(setUserContext({ id: decoded.id, role: decoded.rol, username: decoded.username }));
-    } else {
-      dispatch(setUserContext(Object.assign({})));
-      clearLoginStorage();
-    }
-  }, []);
+    return <WrappedComponent {...props} />;
+  };
 
-  return <WrappedComponent {...props} />;
+  WithBaseComponent.displayName = `withBase(${getDisplayName(
+    WrappedComponent
+  )})`;
+
+  return WithBaseComponent;
 };
+
+function getDisplayName(WrappedComponent: any) {
+  return WrappedComponent.displayName || WrappedComponent.name || "Component";
+}
 
 export { withBase };

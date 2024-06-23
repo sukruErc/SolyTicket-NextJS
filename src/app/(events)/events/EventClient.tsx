@@ -1,0 +1,199 @@
+"use client";
+
+import React, { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
+import SolyDatePicker from "@/app/components/Base/SolyDatepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Link from "next/link";
+import EventCard from "@/app/components/Base/EventCard";
+import { EventsApi } from "@/app/api/events";
+import { usePrevious } from "@/app/base/hooks/usePrevious";
+
+// Dynamically import SolySelect to ensure it's only used on the client side
+const SolySelect = dynamic(() => import("@/app/components/Base/SolySelect"), {
+  ssr: false,
+});
+
+interface EventClientProps {
+  filter: EventFilterTypes;
+  events: Event[];
+}
+
+const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
+  const [events, setEvents] = useState<Event[]>(initialEvents);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [categoryTypes, setCategoryTypes] = useState<CategoryType[]>();
+  const isFirstLoad = useRef(true);
+
+  const [selectedCategoryType, setSelectedCategoryType] = useState<string>("");
+
+  const [filters, setFilters] = useState<GetEventsByFilterRequestModel>({
+    page: 1,
+    size: 20,
+    locationId: "",
+    endDate: "",
+    categoryTypeId: "",
+    categoryId: "",
+    organizerId: "",
+    sortBy: "date",
+    sortOrder: "asc",
+  });
+
+  const previousFilters = usePrevious(filters);
+
+  useEffect(() => {
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false;
+      return;
+    }
+    console.log(previousFilters);
+
+    const fetchEvents = async () => {
+      const eventApi = new EventsApi({});
+      const res = await eventApi.getEventsByFilter({
+        page: filters.page,
+        size: filters.size,
+        locationId: filters.locationId || undefined,
+        endDate: filters.endDate || undefined,
+        categoryTypeId: filters.categoryTypeId || undefined,
+        categoryId: filters.categoryId || undefined,
+        organizerId: filters.organizerId || undefined,
+        sortBy: "date",
+        sortOrder: filters.sortOrder || undefined,
+      });
+      setEvents(res.data || []);
+    };
+
+    if (previousFilters) {
+      fetchEvents();
+    }
+  }, [filters, previousFilters]);
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      endDate: date ? date.toISOString() : "",
+    }));
+  };
+
+  const handleCategoryChange = (event: string) => {
+    setSelectedCategory(event);
+    const tempType = filter.categories.find((item) => item.id === event);
+    setCategoryTypes(tempType?.CategoryType);
+    setSelectedCategoryType("");
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      categoryId: event,
+      categoryTypeId: "",
+    }));
+  };
+
+  const handleCategoryTypeClick = (categoryTypeId: string) => {
+    setSelectedCategoryType(categoryTypeId);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      categoryTypeId,
+    }));
+  };
+
+  const handleOrderClick = (sortBy: string) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      sortBy,
+      sortOrder: prevFilters.sortOrder === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  const handleLocationClick = (locationId: string) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      locationId,
+    }));
+  };
+
+  const handleOrganizerClick = (organizerId: string) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      organizerId,
+    }));
+  };
+
+  return (
+    <>
+      <div className="container mx-auto px-2 text-[#17161A]">
+        <div className="my-10 text-center md:text-start">
+          <div className="flex flex-wrap justify-center md:justify-center items-center gap-4">
+            {filter?.orderTypes && (
+              <SolySelect
+                options={filter.orderTypes}
+                onClick={handleOrderClick}
+                placeholder="Sırala"
+              />
+            )}
+            <div className="relative">
+              <SolyDatePicker onDateChange={handleDateChange} />
+            </div>
+            {filter?.categories && (
+              <SolySelect
+                options={filter.categories}
+                onClick={handleCategoryChange}
+                placeholder="Kategori"
+              />
+            )}
+            {filter?.locations && (
+              <SolySelect
+                options={filter.locations}
+                onClick={handleLocationClick}
+                placeholder="Mekan"
+              />
+            )}
+            {filter?.organizers && (
+              <SolySelect
+                options={filter.organizers}
+                onClick={handleOrganizerClick}
+                placeholder="Organizatör"
+              />
+            )}
+          </div>
+          {selectedCategory !== "" && (
+            <div className="flex flex-wrap justify-center md:justify-center items-center gap-4 pt-5">
+              {categoryTypes?.map((item: CategoryType, index: number) => (
+                <div
+                  key={index}
+                  className={`cursor-pointer flex items-center justify-center px-4 py-2 rounded-lg border-2 transition-all duration-200 
+                    ${
+                      selectedCategoryType === item.id
+                        ? "bg-[#4e43f1] text-white"
+                        : "bg-white text-gray-700 hover:border-[#4e43f1]"
+                    }`}
+                  onClick={() => handleCategoryTypeClick(item.id)}
+                >
+                  {item.name}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {events.map((event, index) => (
+            <Link key={index} href={`/events/${event.id}`}>
+              <EventCard
+                id={event.id}
+                cardImage={event.image}
+                eventDateRange={event.date}
+                eventTime={event.time}
+                eventTitle={event.eventName}
+                eventLocation={event.location.name}
+                dull={false}
+              />
+            </Link>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default EventClient;

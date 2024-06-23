@@ -1,17 +1,20 @@
+// withLogin.tsx
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useAppDispatch, useAppSelector } from "@/redux/app/hooks";
-import { setUserContext, userContextRedux } from "@/redux/slices/user-context";
-import { queryParamsToURL } from "@/utilities/queryParamsToUrl";
-import { ClientStorage } from "@/base/storage";
-import { ConfigHelper } from "@/base/constants";
-import { isLoggedIn } from "@/base/proxy/authenticate";
-import { clearLoginStorage } from "@/base/utils/proxyUtils";
-import JwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+import { useAppDispatch, useAppSelector } from "../../../redux/app/hooks";
+import {
+  setUserContext,
+  userContextRedux,
+} from "../../../redux/slices/user-context";
+import { ClientStorage } from "../base/storage";
+import { ConfigHelper } from "../base/constants";
+import { isLoggedIn } from "../base/proxy/authenticate";
+import { clearLoginStorage } from "../base/utils/proxyUtils";
+import { queryParamsToURL } from "../utilities/queryParamsToUrl";
 
-const withLogin =
-  (WrappedComponent: any) =>
-  ({ ...props }) => {
+const withLogin = (WrappedComponent: any) => {
+  const WithLoginComponent = (props: any) => {
     const [hasAuthorized, setAuthorized] = useState<boolean | undefined>(
       undefined
     );
@@ -28,14 +31,12 @@ const withLogin =
 
       // Check has token
       if (isLoggedIn()) {
-        const token: string = ClientStorage.getItem(
-          ConfigHelper.COSMORATE_USER_TOKEN
-        );
+        const token: string = ClientStorage.getItem(ConfigHelper.SOLY_USER_ID);
 
         let decoded: any = Object.assign({});
 
         try {
-          decoded = JwtDecode(token);
+          decoded = jwtDecode(token);
         } catch (error) {}
 
         // Check token expiration
@@ -79,4 +80,11 @@ const withLogin =
     );
   };
 
-export { withLogin };
+  WithLoginComponent.displayName = `withLogin(${
+    WrappedComponent.displayName || WrappedComponent.name || "Component"
+  })`;
+
+  return WithLoginComponent;
+};
+
+export default withLogin;

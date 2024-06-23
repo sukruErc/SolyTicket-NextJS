@@ -1,28 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { ConfigHelper } from "../base/constants";
-import { ClientStorage } from "@/base/storage";
+import { ClientStorage } from "../base/storage";
 
-const withoutToken = (WrappedComponent: any) => ({ ...props }) => {
-  const [hasAuthorized, setAuthorized] = useState<boolean | undefined>(undefined);
+const withoutToken = (WrappedComponent: any) => {
+  const WithAuthComponent = (props: any) => {
+    const [hasAuthorized, setAuthorized] = useState<boolean | undefined>(
+      undefined
+    );
 
-  useEffect(() => {
-    isLoggedInLocal();
-  }, []);
+    useEffect(() => {
+      const isLoggedInLocal = async () => {
+        if (!ClientStorage.getItem(ConfigHelper.SOLY_USER_ID)) {
+          setAuthorized(false);
+        } else {
+          setAuthorized(true);
+          window.location.href = "/";
+        }
+      };
 
-  const isLoggedInLocal = async () => {
-    if (!ClientStorage.getItem(ConfigHelper.COSMORATE_USER_TOKEN)) {
-      setAuthorized(false);
-    } else {
-      setAuthorized(true);
-      window.location.href = `/`;
-    }
+      isLoggedInLocal();
+    }, []);
+
+    return (
+      <>
+        {hasAuthorized !== undefined && !hasAuthorized && (
+          <WrappedComponent {...props} />
+        )}
+      </>
+    );
   };
 
-  return (
-    <>
-      {hasAuthorized !== undefined && !hasAuthorized && <WrappedComponent {...props} />}
-    </>
-  );
+  WithAuthComponent.displayName = `withoutToken(${getDisplayName(
+    WrappedComponent
+  )})`;
+  return WithAuthComponent;
 };
+
+function getDisplayName(WrappedComponent: any) {
+  return WrappedComponent.displayName || WrappedComponent.name || "Component";
+}
 
 export { withoutToken };
