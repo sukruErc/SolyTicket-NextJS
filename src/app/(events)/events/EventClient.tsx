@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import SolyDatePicker from "@/app/components/Base/SolyDatepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -25,6 +25,8 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categoryTypes, setCategoryTypes] = useState<CategoryType[]>();
   const isFirstLoad = useRef(true);
+  const [isFetching, setIsFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   const [selectedCategoryType, setSelectedCategoryType] = useState<string>("");
 
@@ -42,14 +44,8 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
 
   const previousFilters = usePrevious(filters);
 
-  useEffect(() => {
-    if (isFirstLoad.current) {
-      isFirstLoad.current = false;
-      return;
-    }
-    console.log(previousFilters);
-
-    const fetchEvents = async () => {
+  const fetchEvents = useCallback(
+    async (append = false) => {
       const eventApi = new EventsApi({});
       const res = await eventApi.getEventsByFilter({
         page: filters.page,
@@ -59,22 +55,55 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
         categoryTypeId: filters.categoryTypeId || undefined,
         categoryId: filters.categoryId || undefined,
         organizerId: filters.organizerId || undefined,
-        sortBy: "date",
+        sortBy: filters.sortBy,
         sortOrder: filters.sortOrder || undefined,
       });
-      setEvents(res.data || []);
-    };
+      const newEvents = res.data || [];
+      if (append) {
+        setEvents((prevEvents) => [...prevEvents, ...newEvents]);
+      } else {
+        setEvents(newEvents);
+      }
+      setHasMore(newEvents.length === filters.size);
+      setIsFetching(false);
+    },
+    [filters]
+  );
 
-    if (previousFilters) {
-      fetchEvents();
+  useEffect(() => {
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false;
+      return;
     }
-  }, [filters, previousFilters]);
+    fetchEvents();
+  }, [filters, fetchEvents]);
+
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 &&
+      !isFetching &&
+      hasMore
+    ) {
+      setIsFetching(true);
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        // page: prevFilters.page + 1,
+        size: prevFilters.size + 20,
+      }));
+    }
+  }, [isFetching, hasMore]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
     setFilters((prevFilters) => ({
       ...prevFilters,
       endDate: date ? date.toISOString() : "",
+      page: 1,
     }));
   };
 
@@ -87,6 +116,7 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
       ...prevFilters,
       categoryId: event,
       categoryTypeId: "",
+      page: 1,
     }));
   };
 
@@ -95,6 +125,7 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       categoryTypeId,
+      page: 1,
     }));
   };
 
@@ -103,6 +134,7 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
       ...prevFilters,
       sortBy,
       sortOrder: prevFilters.sortOrder === "asc" ? "desc" : "asc",
+      page: 1,
     }));
   };
 
@@ -110,6 +142,7 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       locationId,
+      page: 1,
     }));
   };
 
@@ -117,6 +150,7 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       organizerId,
+      page: 1,
     }));
   };
 
@@ -178,19 +212,21 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {events.map((event, index) => (
-            <Link key={index} href={`/events/${event.id}`}>
-              <EventCard
-                id={event.id}
-                cardImage={event.image}
-                eventDateRange={event.date}
-                eventTime={event.time}
-                eventTitle={event.eventName}
-                eventLocation={event.location.name}
-                dull={false}
-              />
-            </Link>
+            // <Link key={index} href={`/events/${event.id}`}>
+            <EventCard
+              key={index}
+              id={event.id}
+              cardImage={event.image}
+              eventDateRange={event.date}
+              eventTime={event.time}
+              eventTitle={event.eventName}
+              eventLocation={event.location.name}
+              dull={false}
+            />
+            // </Link>
           ))}
         </div>
+        {isFetching && <p>Loading more events...</p>}
       </div>
     </>
   );

@@ -17,16 +17,19 @@ import { useSwiper } from "swiper/react";
 import Image from "next/image";
 import Link from "next/link";
 
-// Define the component with a name
-const EventCardSwiper = () => {
+interface EventCardSwiperProps {
+  events: Event[];
+}
+
+const EventCardSwiper: React.FC<EventCardSwiperProps> = ({ events }) => {
   const pathname = usePathname();
   const swiper = useSwiper();
 
   return (
     <>
       <div className="container px-5 mx-auto py-10 sm:py-16 md:py-32">
-        <h6>Discover the fun!</h6>
-        <h3 className="mb-6">Recent Events</h3>
+        <h6>Eğlenceyi Keşfedin!</h6>
+        <h3 className="mb-6">Yaklaşan Etkinlikler</h3>
 
         <div className="myswiper">
           <Swiper
@@ -57,17 +60,17 @@ const EventCardSwiper = () => {
             onSwiper={(swiper) => console.log(swiper)}
             onSlideChange={() => console.log("slide change")}
           >
-            {EventsCardData.map((cardData, index) => {
+            {events.map((event, index) => {
               return (
                 <SwiperSlide key={index}>
                   <EventCard
-                    cardImage={cardData.src}
-                    eventDateRange={cardData.date}
-                    eventTime={cardData.time}
-                    eventTitle={cardData.title}
-                    eventLocation={cardData.location}
-                    id={"cardData.id"} // Ensure to include all necessary props
-                    dull={false} // Ensure to include all necessary props
+                    cardImage={EventsCardData[0].src}
+                    eventDateRange={event.date}
+                    eventTime={event.time}
+                    eventTitle={event.eventName}
+                    eventLocation={event.location?.name}
+                    id={event.id}
+                    dull={false}
                   />
                 </SwiperSlide>
               );
@@ -77,11 +80,11 @@ const EventCardSwiper = () => {
         <div className="text-end mt-4">
           <Link
             className={`link ${
-              pathname === "/category" ? "active" : ""
+              pathname === "/events" ? "active" : ""
             } bg-none text-[#4E43F1] text-[30px] font-medium`}
-            href="/category"
+            href="/events"
           >
-            View All{" "}
+            Tümünü Gör{" "}
             <Image
               alt=""
               className="ml-3 inline-block relative top-[-2px]"

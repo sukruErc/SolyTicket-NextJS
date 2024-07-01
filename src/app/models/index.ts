@@ -49,6 +49,7 @@ interface Event {
   locationId: string;
   createdAt: string;
   updatedAt: string;
+  priceLabel: string;
   location: {
     id: string;
     name: string;
@@ -122,4 +123,16 @@ interface Organizer {
   createdAt: Date;
   updatedAt: Date;
   familyId: string | null;
+}
+
+interface CategoryWithCount {
+  id: string;
+  categoryName: string;
+  count: number;
+}
+
+interface LocationsForHomepage {
+  id: string;
+  locationName: string;
+  locationAddress: string;
 }

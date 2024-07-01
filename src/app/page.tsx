@@ -35,6 +35,26 @@ const getHomePageValues = async (): Promise<HomepageValuesResponse> => {
   }
 };
 
+const getRecentEvents = async (): Promise<Event[]> => {
+  try {
+    const homepageApi = new HomepageApi({});
+    const res = await homepageApi.getRecentEvents();
+    return res.data || [];
+  } catch (error) {
+    return [];
+  }
+};
+
+const getCategoryWithCount = async (): Promise<CategoryWithCount[]> => {
+  try {
+    const homepageApi = new HomepageApi({});
+    const res = await homepageApi.getCategoryWithCount();
+    return res.data || [];
+  } catch (error) {
+    return [];
+  }
+};
+
 const getCategoryItems = async (): Promise<IdNameQuery[]> => {
   try {
     const homepageApi = new HomepageApi({});
@@ -55,19 +75,36 @@ const getLocations = async (): Promise<IdNameQuery[]> => {
   }
 };
 
+const getLocationsForHomepage = async (): Promise<LocationsForHomepage[]> => {
+  try {
+    const homepageApi = new HomepageApi({});
+    const res = await homepageApi.getLocationsForHomepage();
+    return res.data || [];
+  } catch (error) {
+    return [];
+  }
+};
+
 const HomePage: NextPage<HomePageProps> = async () => {
   const homePageValues = await getHomePageValues();
   const categoryItems = await getCategoryItems();
   const locations = await getLocations();
+  const recentEvents = await getRecentEvents();
+  const categoryForGuide = await getCategoryWithCount();
+  const locationsForHomepage = await getLocationsForHomepage();
 
   return (
     <>
       <MainNavbar categoryItems={categoryItems} locations={locations} />
-      <HeroSection homePageValues={homePageValues} />
-      <UpcommingEvents slidesPerView={1} />
-      <Guides />
-      <EventCardSwiper />
-      <VenuesAroundYou />
+      <HeroSection
+        categoryItems={categoryItems}
+        locations={locations}
+        homePageValues={homePageValues}
+      />
+      <UpcommingEvents slidesPerView={1} events={recentEvents} />
+      <Guides categories={categoryForGuide} />
+      <EventCardSwiper events={recentEvents} />
+      <VenuesAroundYou locations={locationsForHomepage} />
       <Footer />
     </>
   );

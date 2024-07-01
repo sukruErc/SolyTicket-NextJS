@@ -1,19 +1,40 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import CategoryImage from "@/app/assets/svg/iconamoon_category-light.svg";
 import SelectLocation from "@/app//assets/svg/select_location.svg";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { GetServerSideProps, NextPage } from "next";
 import { HomepageApi } from "@/app/api/homepage";
 
 interface HeroSectionProps {
   homePageValues: HomepageValuesResponse;
+  categoryItems: IdNameQuery[];
+  locations: IdNameQuery[];
 }
 
 const HeroSection: NextPage<HeroSectionProps> = (props) => {
   const pathname = usePathname();
+  const router = useRouter();
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const handleLocationChange = (event: any) => {
+    setSelectedLocation(event.target.value);
+  };
+  const handleCategoryChange = (event: any) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (selectedLocation) params.append("categoryId", selectedLocation);
+    if (selectedCategory) params.append("locationId", selectedCategory);
+    const url = params.toString();
+    router.push(`/events?${url}`);
+  };
+
   return (
     <>
       <div className="HeroSection text-[#17161A]">
@@ -37,16 +58,20 @@ const HeroSection: NextPage<HeroSectionProps> = (props) => {
                   </label>
 
                   <div className="selectContainer relative">
-                    {/* <select
+                    <select
                       id="selectcategory"
                       className="block w-full pl-7 px-4 py-3 rounded border-none"
+                      value={selectedCategory}
+                      onChange={handleCategoryChange}
                     >
-                      <option selected>Etkinlik Tipi Seçiniz</option>
-                      <option value="US">United States</option>
-                      <option value="CA">Canada</option>
-                      <option value="FR">France</option>
-                      <option value="DE">Germany</option>
-                    </select> */}
+                      <option value={""}>Etkinlik Tipi Seçiniz</option>
+                      {props.categoryItems?.length > 0 &&
+                        props.categoryItems.map((item, index) => (
+                          <option key={index} value={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                    </select>
                     <Image
                       className="mr-3 absolute top-[11px]"
                       src={CategoryImage}
@@ -63,16 +88,20 @@ const HeroSection: NextPage<HeroSectionProps> = (props) => {
                   </label>
 
                   <div className="selectContainer relative">
-                    {/* <select
+                    <select
                       id="selectlocation"
                       className="block w-full pl-7 px-4 py-3 rounded border-none"
+                      value={selectedLocation}
+                      onChange={handleLocationChange}
                     >
-                      <option>Şehir Seçiniz</option>
-                      <option value="US">United States</option>
-                      <option value="CA">Canada</option>
-                      <option value="FR">France</option>
-                      <option value="DE">Germany</option>
-                    </select> */}
+                      <option value={""}>Şehir Seçiniz</option>
+                      {props.locations?.length > 0 &&
+                        props.locations.map((item, index) => (
+                          <option key={index} value={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                    </select>
                     <Image
                       className="mr-3 absolute top-[10px]"
                       src={SelectLocation}
@@ -80,7 +109,7 @@ const HeroSection: NextPage<HeroSectionProps> = (props) => {
                     />
                   </div>
                 </div>
-                <Link
+                {/* <Link
                   className={`link ${
                     pathname === "/category" ? "active" : ""
                   } BlueButton col-span-2 md:col-span-1 max-h-fit justify-center self-center block sm:flex`}
@@ -88,8 +117,18 @@ const HeroSection: NextPage<HeroSectionProps> = (props) => {
                   onClick={() => console.log(props.homePageValues)}
                 >
                   Ara
-                </Link>
-                {/* <button className='BlueButton col-span-2 md:col-span-1 max-h-fit justify-center self-center block sm:flex'> Search</button> */}
+                </Link> */}
+                {/* <button className={`BlueButton w-full `} type="submit">
+                  Ara
+                </button> */}
+                <button
+                  type="button"
+                  className="BlueButton col-span-2 md:col-span-1 max-h-fit justify-center self-center block sm:flex"
+                  onClick={handleSearch}
+                >
+                  {" "}
+                  Ara
+                </button>
               </form>
             </div>
             <div className="EventsNumbers grid  grid-cols-2 sm:grid-cols-3 w-auto lg:w-5/12 gap-8">

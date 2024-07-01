@@ -1,5 +1,5 @@
-'use client';
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+"use client";
+import React, { createContext, useState, useContext, ReactNode } from "react";
 
 interface SpinnerContextProps {
   loading: boolean;
@@ -10,7 +10,7 @@ interface SpinnerContextProps {
 const SpinnerContext = createContext<SpinnerContextProps>({
   loading: false,
   showSpinner: () => {},
-  hideSpinner: () => {}
+  hideSpinner: () => {},
 });
 
 export const SpinnerProvider = ({ children }: { children: ReactNode }) => {
