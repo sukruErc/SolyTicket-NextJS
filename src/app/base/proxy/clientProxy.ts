@@ -90,7 +90,7 @@ export class ClientProxy {
             toast.onmouseleave = Swal.resumeTimer;
           },
         });
-        console.log(err);
+        // console.log(err);
         Toast.fire({
           icon: "error",
           title: err.response
@@ -144,7 +144,7 @@ export class ClientProxy {
             toast.onmouseleave = Swal.resumeTimer;
           },
         });
-        console.log(err);
+        // console.log(err);
         Toast.fire({
           icon: "error",
           title: err.response

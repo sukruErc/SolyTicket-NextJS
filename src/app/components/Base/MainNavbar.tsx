@@ -30,13 +30,13 @@ const MainNavbar = (props: MainNavbarProps) => {
   );
 
   const locationOptions =
-    props.locations?.map((item: IdNameQuery) => ({
+    props.locations.length > 0 && props.locations?.map((item: IdNameQuery) => ({
       value: item.id,
       label: item.name,
     })) || [];
 
   const categoryOptions =
-    props.categoryItems?.map((item: IdNameQuery) => ({
+    props.categoryItems.length > 0 && props.categoryItems?.map((item: IdNameQuery) => ({
       value: item.id,
       label: item.name,
     })) || [];
@@ -96,9 +96,8 @@ const MainNavbar = (props: MainNavbarProps) => {
     <div className="bg-white px-4 shadow-NavShadow">
       <div className="container mx-auto flex h-20 items-center gap-8">
         <Link
-          className={`link ${
-            pathname === "/" ? "active" : ""
-          } block text-teal-600`}
+          className={`link ${pathname === "/" ? "active" : ""
+            } block text-teal-600`}
           href="/"
         >
           <Image src={NavbarIcon} alt="Logo" />
@@ -133,17 +132,15 @@ const MainNavbar = (props: MainNavbarProps) => {
             {!userContext?.id ? (
               <div className="sm:flex sm:gap-4">
                 <Link
-                  className={`link ${
-                    pathname === "/login" ? "active" : ""
-                  } block rounded-md py-3.5 text-sm font-medium text-black transition`}
+                  className={`link ${pathname === "/login" ? "active" : ""
+                    } block rounded-md py-3.5 text-sm font-medium text-black transition`}
                   href="/login"
                 >
                   Giriş Yap
                 </Link>
                 <Link
-                  className={`link ${
-                    pathname === "/signup" ? "active" : ""
-                  } BlueButton hidden rounded-md text-sm font-medium transition sm:block`}
+                  className={`link ${pathname === "/signup" ? "active" : ""
+                    } BlueButton hidden rounded-md text-sm font-medium transition sm:block`}
                   href="/signup"
                 >
                   Üye Ol
@@ -273,17 +270,15 @@ const MainNavbar = (props: MainNavbarProps) => {
           {!userContext?.id && (
             <div className="flex flex-col items-center gap-4 p-4">
               <Link
-                className={`link ${
-                  pathname === "/login" ? "active" : ""
-                } block w-full rounded-md py-3.5 text-center text-sm font-medium text-black transition bg-gray-200`}
+                className={`link ${pathname === "/login" ? "active" : ""
+                  } block w-full rounded-md py-3.5 text-center text-sm font-medium text-black transition bg-gray-200`}
                 href="/login"
               >
                 Sign In
               </Link>
               <Link
-                className={`link ${
-                  pathname === "/signup" ? "active" : ""
-                } BlueButton block w-full rounded-md text-center text-sm font-medium transition`}
+                className={`link ${pathname === "/signup" ? "active" : ""
+                  } BlueButton block w-full rounded-md text-center text-sm font-medium transition`}
                 href="/signup"
               >
                 Sign Up

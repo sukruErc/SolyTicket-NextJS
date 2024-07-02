@@ -10,10 +10,7 @@ import { SpinnerProvider } from "./context/SpinnerContext";
 const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <Provider store={store}>
-      <SpinnerProvider>
-        <GlobalSpinner />
         {children}
-      </SpinnerProvider>
     </Provider>
   );
 };

@@ -26,10 +26,10 @@ const venuesAroundYou: React.FC<VenuesAroundYouProps> = ({ locations }) => {
 
               <div className="absolute left-11 bottom-11 z-10 text-white">
                 <div className="title">
-                  <h3 className="text-white">{locations[0].locationName}</h3>
+                  <h3 className="text-white">{locations[0]?.locationName}</h3>
                 </div>
                 <div className="location">
-                  <h4 className="font-light">{locations[0].locationAddress}</h4>
+                  <h4 className="font-light">{locations[0]?.locationAddress}</h4>
                 </div>
               </div>
             </div>
