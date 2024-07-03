@@ -1,18 +1,28 @@
-'use client';
+// components/Base/Spinner.tsx
+
 import React from 'react';
-import styles from './GlobalSpinner.module.css';
-import { useSpinner } from '@/app/context/SpinnerContext';
 
-const GlobalSpinner: React.FC = () => {
-  const { loading } = useSpinner();
+const Spinner = () => (
+  <div className="flex justify-center items-center mt-4">
+    <div className="spinner"></div>
+    <style jsx>{`
+      .spinner {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(255, 255, 255, 0.3); /* Light grey color */
+        border-radius: 50%;
+        border-top-color: #4E43F1; /* White color for the animated part */
+        animation: spin 1s ease infinite;
+      }
 
-  if (!loading) return null;
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    `}</style>
+  </div>
+);
 
-  return (
-    <div className={styles.spinnerContainer}>
-      <div className={styles.spinner}></div>
-    </div>
-  );
-};
-
-export default GlobalSpinner;
+export default Spinner;

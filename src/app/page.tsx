@@ -28,7 +28,7 @@ interface HomePageProps {
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const getHomePageValues = async (): Promise<HomepageValuesResponse> => {
-  await delay(1000000);
+  // await delay(1000000);
   try {
     const homepageApi = new HomepageApi({});
     const res = await homepageApi.getHomePageValues();

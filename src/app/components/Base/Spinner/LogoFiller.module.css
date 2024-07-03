@@ -59,18 +59,18 @@
 }
 
 .dot2 {
-  top: 75%;
+  top: 85%;
   /* Position at the bottom left of the circle */
-  left: 25%;
+  left: 15%;
   transform: translate(-50%, -50%);
   background-color: #4E43F1;
   /* Color for the second dot */
 }
 
 .dot3 {
-  top: 75%;
+  top: 85%;
   /* Position at the bottom right of the circle */
-  left: 75%;
+  left: 85%;
   transform: translate(-50%, -50%);
   background-color: #4E43F1;
   /* Color for the third dot */
