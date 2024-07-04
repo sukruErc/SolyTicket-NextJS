@@ -10,6 +10,7 @@ import { userContextRedux } from "../../../../redux/slices/user-context";
 import { withBase } from "@/app/hoc/withBase";
 import SearchableSelect from "./SearchableSelect";
 import SearchBar from "./Searchbar";
+import ThemeToggle from "./ThemeToggle";
 
 interface MainNavbarProps {
   categoryItems: IdNameQuery[];
@@ -93,7 +94,7 @@ const MainNavbar = (props: MainNavbarProps) => {
   };
 
   return (
-    <div className="bg-white px-4 shadow-NavShadow">
+    <div className=" px-4 shadow-NavShadow">
       <div className="container mx-auto flex h-20 items-center gap-8">
         <Link
           className={`link ${pathname === "/" ? "active" : ""
@@ -113,15 +114,7 @@ const MainNavbar = (props: MainNavbarProps) => {
               selectedValue={locationId} // Display selected location
               instanceId="location-select" // Add instanceId for consistent ID generation
             />
-            {/* 
-            <SearchableSelect
-              options={categoryOptions}
-              name="categories"
-              placeholder="Kategori Seçiniz"
-              onOptionSelect={handleCategorySelect}
-              selectedValue={categoryId} // Display selected category
-              instanceId="category-select" // Add instanceId for consistent ID generation
-            /> */}
+            <ThemeToggle />
           </div>
 
           <div className="w-2/6">
@@ -133,7 +126,7 @@ const MainNavbar = (props: MainNavbarProps) => {
               <div className="sm:flex sm:gap-4">
                 <Link
                   className={`link ${pathname === "/login" ? "active" : ""
-                    } block rounded-md py-3.5 text-sm font-medium text-black transition`}
+                    } block rounded-md py-3.5 text-sm font-medium  transition`}
                   href="/login"
                 >
                   Giriş Yap

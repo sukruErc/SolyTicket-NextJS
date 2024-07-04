@@ -188,7 +188,7 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
 
   return (
     <>
-      <div className="container mx-auto px-2 text-[#17161A]">
+      <div className="container mx-auto px-2 ">
         <div className="my-10 text-center md:text-start">
           <div className="flex flex-wrap justify-center md:justify-center items-center gap-4">
             {filter?.orderTypes && (

@@ -68,7 +68,7 @@ const AllEvents: React.FC<{
   return (
     <>
       <PageTitle title={`${title}`} />
-      <div className="container mx-auto px-2 text-[#17161A]">
+      <div className="container mx-auto px-2 ">
         {filter && <ClientSideComponents events={events} filter={filter} />}
       </div>
     </>

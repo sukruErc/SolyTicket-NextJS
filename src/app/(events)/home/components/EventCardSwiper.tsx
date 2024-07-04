@@ -62,7 +62,7 @@ const EventCardSwiper: React.FC<EventCardSwiperProps> = ({ events }) => {
           >
             {events.map((event, index) => {
               return (
-                <SwiperSlide key={index}>
+                <SwiperSlide className="mb-3" key={index}>
                   <EventCard
                     cardImage={EventsCardData[0].src}
                     eventDateRange={event.date}
@@ -79,9 +79,8 @@ const EventCardSwiper: React.FC<EventCardSwiperProps> = ({ events }) => {
         </div>
         <div className="text-end mt-4">
           <Link
-            className={`link ${
-              pathname === "/events" ? "active" : ""
-            } bg-none text-[#4E43F1] text-[30px] font-medium`}
+            className={`link ${pathname === "/events" ? "active" : ""
+              } bg-none text-[#4E43F1] text-[30px] font-medium`}
             href="/events"
           >
             Tümünü Gör{" "}

@@ -10,11 +10,40 @@
 *{
   /* border: 1px solid blue !important; */
 }
+
+/* styles/global.css */
 :root {
+  --background-color:0,
+    0,
+    0;
+  --text-color: rgb(var(--foreground-rgb));
+  --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+    --color-text-primary: #17161A;
+      --color-text-secondary: #17161A;
+      --hero-background-image: url(./assets/images/hero\ background.png);
+}
+
+
+[data-theme='dark'] {
+  --background-color: #17161A;
+  --text-color: 255,
+    255,
+    255;
+    --color-text-primary: #fff;
+      --color-text-secondary: #fff;
+      --hero-background-image: url(./assets/images/hero\ background-dark.png);
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--color-text-primary);
+}
+/* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-}
+} */
 
 /* @media (prefers-color-scheme: dark) {
   :root {
@@ -24,11 +53,11 @@
   }
 } */
 
-body {
+/* body {
   color: rgb(var(--foreground-rgb));
   background:#ffffff ;
-  
-}
+
+} */
 
 @layer utilities {
   .text-balance {
@@ -49,32 +78,36 @@ body {
   h3{
     font-size: 36px;
     font-weight: 600;
-    color: #17161A;
-    
+    color: var(--color-text-primary);
+
   }
   h4{
     font-size: 20px;
-    font-weight: 200;  
+    font-weight: 200;
   }
   h5{
     font-size: 1.25rem;
     font-weight: 600;
+    color: var(--color-text-primary);
   }
   h6{
-    color: #17161A;
+    color: var(--color-text-primary);
     font-size: 15px;
-    font-weight: 600;    
+    font-weight: 600;
   }
+     p {
+       color: var(--color-text-primary);
+     }
 
   img{
     display: inline-block !important;
 
-  } 
+  }
 
   .navbarSelects{
     padding-right: 28px !important;
   }
-  
+
 
   @media screen and (max-width: 576px){
     h1{
@@ -112,10 +145,13 @@ body {
     font-weight: 600;
   }
   .HeroSection{
-    background-image: url(./assets/images/hero\ background.png);
+    background-image: var(--hero-background-image);
     background-position: right center;
     background-repeat: no-repeat;
     background-size: cover;
+    /* background: #17161A; */
+    /* background: #4E43F11A; */
+    /* background: #4E43F10D; */
   }
 
   .newInput{
@@ -132,6 +168,6 @@ body {
   }
   .subHeadingText{
     font-weight: 500;
-    
+
   }
 }

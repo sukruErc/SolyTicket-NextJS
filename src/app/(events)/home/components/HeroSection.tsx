@@ -37,7 +37,7 @@ const HeroSection: NextPage<HeroSectionProps> = (props) => {
 
   return (
     <>
-      <div className="HeroSection text-[#17161A]">
+      <div className="HeroSection ">
         <div className="container mx-auto py-10 sm:py-16 md:py-32 ">
           <div className="HeroContent px-5 sm:px-0">
             <div className="HeroText">
@@ -52,7 +52,7 @@ const HeroSection: NextPage<HeroSectionProps> = (props) => {
                 <div className="select1 col-span-2 ">
                   <label
                     htmlFor="selectcategory border-none"
-                    className="block mb-2 text-base font-bold"
+                    className="block mb-2 text-base font-bold text-black"
                   >
                     Ne
                   </label>
@@ -60,7 +60,7 @@ const HeroSection: NextPage<HeroSectionProps> = (props) => {
                   <div className="selectContainer relative">
                     <select
                       id="selectcategory"
-                      className="block w-full pl-7 px-4 py-3 rounded border-none"
+                      className="block w-full pl-7 px-4 py-3 rounded border-none text-black"
                       value={selectedCategory}
                       onChange={handleCategoryChange}
                     >
@@ -82,7 +82,7 @@ const HeroSection: NextPage<HeroSectionProps> = (props) => {
                 <div className="select2 col-span-2 ">
                   <label
                     htmlFor="selectlocation"
-                    className="block mb-2 text-base font-bold"
+                    className="block mb-2 text-base font-bold text-black"
                   >
                     Nerede
                   </label>
@@ -90,7 +90,7 @@ const HeroSection: NextPage<HeroSectionProps> = (props) => {
                   <div className="selectContainer relative">
                     <select
                       id="selectlocation"
-                      className="block w-full pl-7 px-4 py-3 rounded border-none"
+                      className="block w-full pl-7 px-4 py-3 rounded border-none text-black"
                       value={selectedLocation}
                       onChange={handleLocationChange}
                     >

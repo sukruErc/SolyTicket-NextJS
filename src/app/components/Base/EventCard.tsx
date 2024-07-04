@@ -39,7 +39,7 @@ const EventCard: React.FC<EventCardProps> = ({
   return (
     <Link href={`/events/${id}`} className="container mx-auto mb-2">
       <div
-        className={`card shadow-EventCardShadow rounded-xl text-[#17161A] ${opacityClass} cursor-pointer`}
+        className={`card shadow-EventCardShadow rounded-xl  ${opacityClass} cursor-pointer`}
       >
         <div className="cardImage w-full h-[200px] ">
           <Image

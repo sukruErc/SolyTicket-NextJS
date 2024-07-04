@@ -4,13 +4,17 @@
 import React from "react";
 import { Provider } from "react-redux";
 import { store } from "../../redux/app/store";
-import GlobalSpinner from "./components/Base/Spinner/GlobalSpinner";
-import { SpinnerProvider } from "./context/SpinnerContext";
+import { ThemeProvider as MaterialThemeProvider } from "@material-tailwind/react";
+import { CustomThemeProvider } from "./context/ThemeContext";
 
 const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <Provider store={store}>
-        {children}
+      <MaterialThemeProvider>
+        <CustomThemeProvider>
+          {children}
+        </CustomThemeProvider>
+      </MaterialThemeProvider>
     </Provider>
   );
 };
