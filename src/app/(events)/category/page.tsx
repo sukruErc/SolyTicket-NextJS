@@ -68,6 +68,7 @@ const AllEvents: React.FC = () => {
                 eventTitle={cardData.title}
                 eventLocation={cardData.location}
                 dull={false}
+                id={""}
               />
             </Link>
           ))}

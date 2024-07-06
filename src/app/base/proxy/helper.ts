@@ -2,7 +2,7 @@ import { ConfigHelper } from "../constants";
 import { ClientStorage } from "../storage";
 
 export function getToken(): string {
-  return ClientStorage.getItem(ConfigHelper.COSMORATE_USER_TOKEN);
+  return ClientStorage.getItem(ConfigHelper.SOLY_USER_TOKEN);
 }
 
 // export function getRefreshToken(): string {
@@ -11,8 +11,8 @@ export function getToken(): string {
 
 export function getTokenCreatedTime() {
   return Number(
-    ClientStorage.getItem(ConfigHelper.COSMORATE_USER_TOKEN_CREATE_TIME)
-  )
+    ClientStorage.getItem(ConfigHelper.SOLY_USER_TOKEN_CREATE_TIME)
+  );
 }
 
 // export function getUserId() {
@@ -26,9 +26,9 @@ export function getTokenCreatedTime() {
 // }
 
 export function isRefreshTime(): boolean {
-  const tokenMiliseconds: number = getTokenCreatedTime()
-  const toDayMiliseconds: number = new Date().getTime()
-  const difMinutes: number = (toDayMiliseconds - tokenMiliseconds) / 60000
+  const tokenMiliseconds: number = getTokenCreatedTime();
+  const toDayMiliseconds: number = new Date().getTime();
+  const difMinutes: number = (toDayMiliseconds - tokenMiliseconds) / 60000;
 
-  return difMinutes >= 1440
+  return difMinutes >= 1440;
 }

@@ -1,34 +1,19 @@
-import React, { lazy, Suspense } from "react";
-// import HeroSection from "@/app/(events)/home/components/HeroSection";
-// import VenuesAroundYou from "@/app/(events)/home/components/venuesAroundYou";
-// import UpcommingEvents from "@/app/(events)/home/components/UpcommingEvents";
-// import Guides from "@/app/(events)/home/components/guides";
-// import Footer from "@/app/components/Base/Footer";
-// import EventCardSwiper from "./(events)/home/components/EventCardSwiper";
-// import MainNavbar from "./components/Base/MainNavbar";
-import { GetServerSideProps, NextPage } from "next";
-import { HomepageApi } from "./api/homepage";
-import GlobalSpinner from "./components/Base/Spinner/GlobalSpinner";
-import HomePageComponent from "./components/Base/page/HomePage";
+// app/page.tsx
 
-const HeroSection = lazy(() => import("@/app/(events)/home/components/HeroSection"));
-const VenuesAroundYou = lazy(() => import("@/app/(events)/home/components/venuesAroundYou"));
-const UpcommingEvents = lazy(() => import("@/app/(events)/home/components/UpcommingEvents"));
-const Guides = lazy(() => import("@/app/(events)/home/components/guides"));
-const Footer = lazy(() => import("@/app/components/Base/Footer"));
-const EventCardSwiper = lazy(() => import("./(events)/home/components/EventCardSwiper"));
-const MainNavbar = lazy(() => import("./components/Base/MainNavbar"));
+import React from "react";
+import { HomepageApi } from "@/app/api/homepage";
+import HomePageComponent from "@/app/components/Base/page/HomePage";
 
 interface HomePageProps {
   homePageValues: HomepageValuesResponse;
   categoryItems: IdNameQuery[];
   locations: IdNameQuery[];
+  recentEvents: Event[];
+  categoryForGuide: CategoryWithCount[];
+  locationsForHomepage: LocationsForHomepage[];
 }
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 const getHomePageValues = async (): Promise<HomepageValuesResponse> => {
-  // await delay(1000000);
   try {
     const homepageApi = new HomepageApi({});
     const res = await homepageApi.getHomePageValues();
@@ -98,7 +83,7 @@ const getLocationsForHomepage = async (): Promise<LocationsForHomepage[]> => {
   }
 };
 
-const HomePage: NextPage<HomePageProps> = async () => {
+const HomePage: React.FC = async () => {
   const homePageValues = await getHomePageValues();
   const categoryItems = await getCategoryItems();
   const locations = await getLocations();
@@ -107,13 +92,14 @@ const HomePage: NextPage<HomePageProps> = async () => {
   const locationsForHomepage = await getLocationsForHomepage();
 
   return (
-    <>
-      <HomePageComponent categoryItems={categoryItems} locations={locations}
-        homePageValues={homePageValues} recentEvents={recentEvents} categoryForGuide={categoryForGuide}
-        locationsForHomepage={locationsForHomepage}
-      />
-
-    </>
+    <HomePageComponent
+      categoryItems={categoryItems}
+      locations={locations}
+      homePageValues={homePageValues}
+      recentEvents={recentEvents}
+      categoryForGuide={categoryForGuide}
+      locationsForHomepage={locationsForHomepage}
+    />
   );
 };
 

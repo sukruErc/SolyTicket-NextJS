@@ -1,7 +1,7 @@
 // withLogin.tsx
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // corrected import
 import { useAppDispatch, useAppSelector } from "../../../redux/app/hooks";
 import {
   setUserContext,
@@ -23,53 +23,55 @@ const withLogin = (WrappedComponent: any) => {
     const router = useRouter();
 
     useEffect(() => {
-      checkUserIsLoggedIn();
-    }, [userContext?.id]);
+      const checkUserIsLoggedIn = async () => {
+        let hasAuth: boolean = false;
 
-    const checkUserIsLoggedIn = async () => {
-      let hasAuth: boolean = false;
-
-      // Check has token
-      if (isLoggedIn()) {
-        const token: string = ClientStorage.getItem(ConfigHelper.SOLY_USER_ID);
-
-        let decoded: any = Object.assign({});
-
-        try {
-          decoded = jwtDecode(token);
-        } catch (error) {}
-
-        // Check token expiration
-        if (
-          decoded &&
-          decoded.exp &&
-          decoded.exp * 1000 > new Date().getTime()
-        ) {
-          hasAuth = true;
-          setAuthorized(true);
-          dispatch(
-            setUserContext({
-              id: decoded.id,
-              role: decoded.rol,
-              username: decoded.username,
-            })
+        // Check has token
+        if (isLoggedIn()) {
+          const token: string = ClientStorage.getItem(
+            ConfigHelper.SOLY_USER_ID
           );
-        } else {
-          dispatch(setUserContext(Object.assign({})));
-          clearLoginStorage();
-        }
-      }
 
-      if (!hasAuth) {
-        const queryParams = Object.assign({ "return-url": router.pathname });
+          let decoded: any = Object.assign({});
 
-        if (router.pathname?.indexOf("get-to-know") > -1) {
-          router.push("/signup");
-        } else {
-          router.push(queryParamsToURL("/login", queryParams));
+          try {
+            decoded = jwtDecode(token);
+          } catch (error) {}
+
+          // Check token expiration
+          if (
+            decoded &&
+            decoded.exp &&
+            decoded.exp * 1000 > new Date().getTime()
+          ) {
+            hasAuth = true;
+            setAuthorized(true);
+            dispatch(
+              setUserContext({
+                id: decoded.id,
+                role: decoded.rol,
+                username: decoded.username,
+              })
+            );
+          } else {
+            dispatch(setUserContext(Object.assign({})));
+            clearLoginStorage();
+          }
         }
-      }
-    };
+
+        if (!hasAuth) {
+          const queryParams = Object.assign({ "return-url": router.pathname });
+
+          if (router.pathname?.indexOf("get-to-know") > -1) {
+            router.push("/signup");
+          } else {
+            router.push(queryParamsToURL("/login", queryParams));
+          }
+        }
+      };
+
+      checkUserIsLoggedIn();
+    }, [userContext?.id, dispatch, router]);
 
     return (
       <>

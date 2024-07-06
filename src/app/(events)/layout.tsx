@@ -1,6 +1,7 @@
 import Footer from "@/app/components/Base/Footer";
 import MainNavbar from "../components/Base/MainNavbar";
 import { HomepageApi } from "../api/homepage";
+import { Suspense } from "react";
 
 const getCategoryItems = async (): Promise<IdNameQuery[]> => {
   try {
@@ -27,13 +28,13 @@ export default async function EventsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const categoryItems = await getCategoryItems();
+  // const categoryItems = await getCategoryItems();
   const locations = await getLocations();
   return (
-    <>
-      <MainNavbar categoryItems={categoryItems} locations={locations} />
+    <Suspense fallback={<div>Loading...</div>}>
+      <MainNavbar locations={locations} />
       <section>{children}</section>
       <Footer />
-    </>
+    </Suspense>
   );
 }

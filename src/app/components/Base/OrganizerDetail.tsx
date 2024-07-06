@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import SelectedLocation from "../../assets/svg/select_location.svg";
 import Image from "next/image";

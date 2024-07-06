@@ -143,9 +143,9 @@ export const encrypt = (password: string): string => {
 };
 
 export const clearLoginStorage = () => {
-  ClientStorage.removeItem(ConfigHelper.COSMORATE_USER_TOKEN);
-  ClientStorage.removeItem(ConfigHelper.COSMORATE_USER_REFRESH_TOKEN);
-  ClientStorage.removeItem(ConfigHelper.COSMORATE_USER_TOKEN_CREATE_TIME);
-  ClientStorage.removeItem(ConfigHelper.COSMORATE_USER_DATA);
-  ClientStorage.removeItem(ConfigHelper.COSMORATE_IS_GET_TO_KNOW);
+  ClientStorage.removeAll();
+  // ClientStorage.removeItem(ConfigHelper.COSMORATE_USER_REFRESH_TOKEN);
+  // ClientStorage.removeItem(ConfigHelper.COSMORATE_USER_TOKEN_CREATE_TIME);
+  // ClientStorage.removeItem(ConfigHelper.COSMORATE_USER_DATA);
+  // ClientStorage.removeItem(ConfigHelper.COSMORATE_IS_GET_TO_KNOW);
 };

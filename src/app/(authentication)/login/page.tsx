@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, Suspense } from "react";
 import Logo from "@/app/assets/svg/solyticket_logo.svg";
 import Image from "next/image";
 import Link from "next/link";
@@ -156,7 +156,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <div className="container mx-auto flex justify-center px-5 my-5 sm:my-20">
         <div className="bg-[#F6F6FE] rounded-[26px] w-full md:w-9/12 lg:w-6/12">
           <div className="px-6 sm:px-16 py-20 text-center mx-auto">
@@ -237,7 +237,7 @@ const Login: React.FC = () => {
           </div>
         </div>
       </div>
-    </>
+    </Suspense>
   );
 };
 
