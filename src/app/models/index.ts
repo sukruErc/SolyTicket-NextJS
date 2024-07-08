@@ -73,6 +73,7 @@ interface Event {
 interface GetEventsByFilterRequestModel {
   page: number;
   size: number;
+  cityId?: string;
   locationId?: string;
   organizerId?: string;
   endDate?: string;

@@ -5,24 +5,15 @@ import PageTitle from "@/app/components/Base/PageTitle";
 import { EventsApi } from "@/app/api/events";
 import Link from "next/link";
 
-// Dynamically import the client-side components
 const ClientSideComponents = dynamic(() => import("./EventClient"), {
   ssr: false,
 });
 
 const fetchEvents = async (
-  categoryId: string | undefined,
-  locationId: string | undefined,
-  organizerId: string | undefined
+  filters: GetEventsByFilterRequestModel
 ): Promise<Event[]> => {
   const eventApi = new EventsApi({});
-  const res = await eventApi.getEventsByFilter({
-    page: 1,
-    size: 20,
-    categoryId: categoryId ?? undefined,
-    locationId: locationId ?? undefined,
-    organizerId: organizerId ?? undefined,
-  });
+  const res = await eventApi.getEventsByFilter(filters);
 
   return res.data || [];
 };
@@ -37,12 +28,21 @@ const fetchFilters = async (): Promise<EventFilterTypes | undefined> => {
 const AllEvents: React.FC<{
   searchParams: { [key: string]: string | string[] | undefined };
 }> = async ({ searchParams }) => {
-  const { categoryId, locationId, organizerId } = searchParams;
-
+  const { categoryId, cityId, organizerId, locationId, categoryTypeId, endDate } = searchParams;
+  const selectedFilters: GetEventsByFilterRequestModel = {
+    page: 1,
+    size: 20,
+    locationId: locationId as string ?? undefined,
+    cityId: cityId as string ?? undefined,
+    endDate: endDate as string ?? undefined,
+    categoryTypeId: categoryTypeId as string ?? undefined,
+    categoryId: categoryId as string ?? undefined,
+    organizerId: organizerId as string ?? undefined,
+    sortBy: "date",
+    sortOrder: "asc",
+  }
   const events = await fetchEvents(
-    categoryId as string,
-    locationId as string,
-    organizerId as string
+    selectedFilters
   );
 
   const filter = await fetchFilters();
@@ -54,7 +54,7 @@ const AllEvents: React.FC<{
     if (searchParams?.categoryId && events.length > 0) {
       return `${events[0].eventCategory.name} Etkinlikleri`;
     }
-    if (searchParams?.locationId && events.length > 0) {
+    if (searchParams?.cityId && events.length > 0) {
       return `${events[0].location.name}'deki Etkinlikler`;
     }
     if (searchParams?.organizerId && events.length > 0) {
@@ -69,7 +69,7 @@ const AllEvents: React.FC<{
     <>
       <PageTitle title={`${title}`} />
       <div className="container mx-auto px-2 ">
-        {filter && <ClientSideComponents events={events} filter={filter} />}
+        {filter && <ClientSideComponents events={events} filter={filter} selectedFilters={selectedFilters} />}
       </div>
     </>
   );

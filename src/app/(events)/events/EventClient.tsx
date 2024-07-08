@@ -9,17 +9,17 @@ import { EventsApi } from "@/app/api/events";
 import { usePrevious } from "@/app/base/hooks/usePrevious";
 import GlobalSpinner from "@/app/components/Base/Spinner/GlobalSpinner";
 
-// Dynamically import SolySelect to ensure it's only used on the client side
 const SolySelect = dynamic(() => import("@/app/components/Base/SolySelect"), {
   ssr: false,
 });
 
 interface EventClientProps {
+  selectedFilters: GetEventsByFilterRequestModel;
   filter: EventFilterTypes;
   events: Event[];
 }
 
-const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
+const EventClient = ({ selectedFilters, filter, events: initialEvents }: EventClientProps) => {
   const [events, setEvents] = useState<Event[]>(initialEvents);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -32,23 +32,14 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
 
   const [selectedCategoryType, setSelectedCategoryType] = useState<string>("");
 
-  const [filters, setFilters] = useState<GetEventsByFilterRequestModel>({
-    page: 1,
-    size: 20,
-    locationId: "",
-    endDate: "",
-    categoryTypeId: "",
-    categoryId: "",
-    organizerId: "",
-    sortBy: "date",
-    sortOrder: "asc",
-  });
+  const [filters, setFilters] = useState<GetEventsByFilterRequestModel>(selectedFilters);
 
   const previousFilters = usePrevious(filters);
 
   const updateURLWithFilters = (filters: GetEventsByFilterRequestModel) => {
     const queryParams = new URLSearchParams();
 
+    if (filters.cityId) queryParams.set("cityId", filters.cityId);
     if (filters.endDate) queryParams.set("endDate", filters.endDate);
     if (filters.categoryId) queryParams.set("categoryId", filters.categoryId);
     if (filters.categoryTypeId) queryParams.set("categoryTypeId", filters.categoryTypeId);
@@ -67,6 +58,7 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
       const res = await eventApi.getEventsByFilter({
         page: filters.page,
         size: filters.size,
+        cityId: filters.cityId || undefined,
         locationId: filters.locationId || undefined,
         endDate: filters.endDate || undefined,
         categoryTypeId: filters.categoryTypeId || undefined,
@@ -97,7 +89,7 @@ const EventClient = ({ filter, events: initialEvents }: EventClientProps) => {
       return;
     }
     fetchEvents();
-  }, [filters, fetchEvents, isInitialLoad]);
+  }, [filters, fetchEvents]);
 
   const handleScroll = useCallback(async () => {
     if (
