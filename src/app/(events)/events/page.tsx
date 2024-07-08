@@ -1,13 +1,7 @@
 import React from "react";
-import dynamic from "next/dynamic";
-import EventCard from "@/app/components/Base/EventCard";
 import PageTitle from "@/app/components/Base/PageTitle";
 import { EventsApi } from "@/app/api/events";
-import Link from "next/link";
-
-const ClientSideComponents = dynamic(() => import("./EventClient"), {
-  ssr: false,
-});
+import EventClient from "./EventClient";
 
 const fetchEvents = async (
   filters: GetEventsByFilterRequestModel
@@ -28,39 +22,44 @@ const fetchFilters = async (): Promise<EventFilterTypes | undefined> => {
 const AllEvents: React.FC<{
   searchParams: { [key: string]: string | string[] | undefined };
 }> = async ({ searchParams }) => {
-  const { categoryId, cityId, organizerId, locationId, categoryTypeId, endDate } = searchParams;
+  const {
+    categoryId,
+    cityId,
+    organizerId,
+    locationId,
+    categoryTypeId,
+    endDate,
+  } = searchParams;
   const selectedFilters: GetEventsByFilterRequestModel = {
     page: 1,
     size: 20,
-    locationId: locationId as string ?? undefined,
-    cityId: cityId as string ?? undefined,
-    endDate: endDate as string ?? undefined,
-    categoryTypeId: categoryTypeId as string ?? undefined,
-    categoryId: categoryId as string ?? undefined,
-    organizerId: organizerId as string ?? undefined,
+    locationId: (locationId as string) ?? undefined,
+    cityId: (cityId as string) ?? undefined,
+    endDate: (endDate as string) ?? undefined,
+    categoryTypeId: (categoryTypeId as string) ?? undefined,
+    categoryId: (categoryId as string) ?? undefined,
+    organizerId: (organizerId as string) ?? undefined,
     sortBy: "date",
     sortOrder: "asc",
-  }
-  const events = await fetchEvents(
-    selectedFilters
-  );
+  };
+  const events = await fetchEvents(selectedFilters);
 
   const filter = await fetchFilters();
 
   const getTitle = () => {
     if (events.length === 0) {
-      return "";
+      return "Etkinlikler İçin Sayfamızı Takip Edin";
     }
     if (searchParams?.categoryId && events.length > 0) {
       return `${events[0].eventCategory.name} Etkinlikleri`;
     }
     if (searchParams?.cityId && events.length > 0) {
-      return `${events[0].location.name}'deki Etkinlikler`;
+      return `${events[0].location.name}\'deki Etkinlikler`;
     }
     if (searchParams?.organizerId && events.length > 0) {
       return `${events[0].creatorId.name} Etkinlikleri`;
     }
-    return "";
+    return "Etkinlikler";
   };
 
   const title = getTitle();
@@ -69,7 +68,13 @@ const AllEvents: React.FC<{
     <>
       <PageTitle title={`${title}`} />
       <div className="container mx-auto px-2 ">
-        {filter && <ClientSideComponents events={events} filter={filter} selectedFilters={selectedFilters} />}
+        {filter && (
+          <EventClient
+            events={events}
+            filter={filter}
+            selectedFilters={selectedFilters}
+          />
+        )}
       </div>
     </>
   );

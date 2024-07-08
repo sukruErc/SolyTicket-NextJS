@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, forwardRef } from "react";
+import React, { useState, forwardRef, useEffect } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { tr } from "date-fns/locale";
@@ -39,9 +39,7 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
             className="bi bi-x-circle"
             viewBox="0 0 16 16"
           >
-            <path
-              d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0zM4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
-            />
+            <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0zM4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
           </svg>
         </button>
       )}
@@ -65,10 +63,16 @@ CustomInput.displayName = "CustomInput";
 // Props for the CustomDatePicker component
 type CustomDatePickerProps = {
   onDateChange: (date: Date | null) => void;
+  value?: string; // Accepts a string in the format "YYYY-MM-DD"
 };
 
-const SolyDatePicker: React.FC<CustomDatePickerProps> = ({ onDateChange }) => {
-  const [startDate, setStartDate] = useState<Date | null>();
+const SolyDatePicker: React.FC<CustomDatePickerProps> = ({
+  onDateChange,
+  value,
+}) => {
+  const [startDate, setStartDate] = useState<Date | null>(
+    value ? new Date(value) : null
+  );
 
   const handleDateChange = (date: Date | null) => {
     setStartDate(date);
@@ -80,20 +84,27 @@ const SolyDatePicker: React.FC<CustomDatePickerProps> = ({ onDateChange }) => {
     onDateChange(null);
   };
 
+  useEffect(() => {
+    setStartDate(value ? new Date(value) : null);
+  }, [value]);
+
   return (
     <DatePicker
       selected={startDate}
       onChange={handleDateChange}
       customInput={
-        <CustomInput value={startDate?.toLocaleDateString("tr")} onClear={handleClearDate} />
+        <CustomInput
+          value={startDate?.toLocaleDateString("tr")}
+          onClear={handleClearDate}
+        />
       }
       locale="tr" // Set locale to Turkish
       dateFormat="dd/MM/yyyy" // Set date format to Turkish format
       calendarClassName="shadow-lg"
       dayClassName={(date) =>
         date.getDate() === startDate?.getDate() &&
-          date.getMonth() === startDate?.getMonth() &&
-          date.getFullYear() === startDate?.getFullYear()
+        date.getMonth() === startDate?.getMonth() &&
+        date.getFullYear() === startDate?.getFullYear()
           ? "bg-green-500 text-white hover:bg-green-600"
           : "hover:bg-gray-200"
       }

@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
-import SolyDatePicker from "@/app/components/Base/SolyDatepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import EventCard from "@/app/components/Base/EventCard";
 import { EventsApi } from "@/app/api/events";
 import { usePrevious } from "@/app/base/hooks/usePrevious";
 import GlobalSpinner from "@/app/components/Base/Spinner/GlobalSpinner";
+import SolyDatePicker from "@/app/components/Base/SolyDatepicker";
 
 const SolySelect = dynamic(() => import("@/app/components/Base/SolySelect"), {
   ssr: false,
@@ -19,7 +19,12 @@ interface EventClientProps {
   events: Event[];
 }
 
-const EventClient = ({ selectedFilters, filter, events: initialEvents }: EventClientProps) => {
+const EventClient = ({
+  selectedFilters,
+  filter,
+  events: initialEvents,
+}: EventClientProps) => {
+  // const { cityId } = searchParams;
   const [events, setEvents] = useState<Event[]>(initialEvents);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -32,7 +37,8 @@ const EventClient = ({ selectedFilters, filter, events: initialEvents }: EventCl
 
   const [selectedCategoryType, setSelectedCategoryType] = useState<string>("");
 
-  const [filters, setFilters] = useState<GetEventsByFilterRequestModel>(selectedFilters);
+  const [filters, setFilters] =
+    useState<GetEventsByFilterRequestModel>(selectedFilters);
 
   const previousFilters = usePrevious(filters);
 
@@ -42,14 +48,16 @@ const EventClient = ({ selectedFilters, filter, events: initialEvents }: EventCl
     if (filters.cityId) queryParams.set("cityId", filters.cityId);
     if (filters.endDate) queryParams.set("endDate", filters.endDate);
     if (filters.categoryId) queryParams.set("categoryId", filters.categoryId);
-    if (filters.categoryTypeId) queryParams.set("categoryTypeId", filters.categoryTypeId);
+    if (filters.categoryTypeId)
+      queryParams.set("categoryTypeId", filters.categoryTypeId);
     if (filters.locationId) queryParams.set("locationId", filters.locationId);
-    if (filters.organizerId) queryParams.set("organizerId", filters.organizerId);
+    if (filters.organizerId)
+      queryParams.set("organizerId", filters.organizerId);
     if (filters.sortBy) queryParams.set("sortBy", filters.sortBy);
     if (filters.sortOrder) queryParams.set("sortOrder", filters.sortOrder);
 
     const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
-    window.history.pushState(null, '', newUrl);
+    window.history.pushState(null, "", newUrl);
   };
 
   const fetchEvents = useCallback(
@@ -187,29 +195,48 @@ const EventClient = ({ selectedFilters, filter, events: initialEvents }: EventCl
               <SolySelect
                 options={filter.orderTypes}
                 onClick={handleOrderClick}
+                // value={filters.sortOrder ?? ""}
                 placeholder="Sırala"
               />
             )}
             <div className="relative">
-              <SolyDatePicker onDateChange={handleDateChange} />
+              <SolyDatePicker
+                value={filters.endDate}
+                onDateChange={handleDateChange}
+              />
             </div>
             {filter?.categories && (
               <SolySelect
                 options={filter.categories}
                 onClick={handleCategoryChange}
+                value={filters.categoryId}
                 placeholder="Kategori"
               />
             )}
-            {filter?.locations && (
+            {filter.locations.length > 0 && filters.cityId ? (
+              <SolySelect
+                options={filter.locations
+                  .filter((location) => location.cityId === filters.cityId)
+                  .map((location) => ({
+                    id: location.id,
+                    name: location.name,
+                  }))}
+                value={filters.locationId}
+                onClick={handleLocationClick}
+                placeholder="Konum"
+              />
+            ) : (
               <SolySelect
                 options={filter.locations}
+                value={filters.locationId}
                 onClick={handleLocationClick}
-                placeholder="Mekan"
+                placeholder="Konum"
               />
             )}
             {filter?.organizers && (
               <SolySelect
                 options={filter.organizers}
+                value={filters.organizerId}
                 onClick={handleOrganizerClick}
                 placeholder="Organizatör"
               />
@@ -221,9 +248,10 @@ const EventClient = ({ selectedFilters, filter, events: initialEvents }: EventCl
                 <div
                   key={index}
                   className={`cursor-pointer flex items-center justify-center px-4 py-2 rounded-lg border-2 transition-all duration-200 
-                    ${selectedCategoryType === item.id
-                      ? "bg-[#4e43f1] text-white"
-                      : "bg-white text-gray-700 hover:border-[#4e43f1]"
+                    ${
+                      selectedCategoryType === item.id
+                        ? "bg-[#4e43f1] text-white"
+                        : "bg-white text-gray-700 hover:border-[#4e43f1]"
                     }`}
                   onClick={() => handleCategoryTypeClick(item.id)}
                 >
