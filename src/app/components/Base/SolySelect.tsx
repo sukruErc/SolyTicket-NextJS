@@ -16,7 +16,14 @@ const SolySelect: React.FC<SolySelectProps> = ({
   value,
   onClick,
 }) => {
-  const theme = useContext(ThemeContext);
+  const themeContext = useContext(ThemeContext);
+
+  if (!themeContext) {
+    throw new Error("SolySelect must be used within a ThemeProvider");
+  }
+
+  const { theme } = themeContext;
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | undefined>(
     value || ""
@@ -77,11 +84,10 @@ const SolySelect: React.FC<SolySelectProps> = ({
   return (
     <div className={theme === "dark" ? "dark" : ""} ref={containerRef}>
       <div
-        className={`rounded-xl mr-2 text-[16px] font-normal border ${
-          theme === "dark"
-            ? "border-gray-600 bg-gray-800 text-gray-200"
-            : "border-gray-300 bg-white text-gray-700"
-        } focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 px-3 py-2 cursor-pointer flex justify-between items-center relative`}
+        className={`rounded-xl mr-2 text-[16px] font-normal border ${theme === "dark"
+          ? "border-gray-600 bg-gray-800 text-gray-200"
+          : "border-gray-300 bg-white text-gray-700"
+          } focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 px-3 py-2 cursor-pointer flex justify-between items-center relative`}
         onClick={() => setIsOpen(!isOpen)}
         style={{ minWidth: dropdownWidth }}
       >
@@ -111,9 +117,8 @@ const SolySelect: React.FC<SolySelectProps> = ({
           </button>
         )}
         <svg
-          className={`w-4 h-4 transition-transform transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-4 h-4 transition-transform transform ${isOpen ? "rotate-180" : ""
+            }`}
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -130,22 +135,19 @@ const SolySelect: React.FC<SolySelectProps> = ({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className={`absolute mt-1 w-auto ${
-            theme === "dark"
-              ? "bg-gray-800 border-gray-600"
-              : "bg-white border-gray-300"
-          } border rounded-xl shadow-lg z-10`}
+          className={`absolute mt-1 w-auto ${theme === "dark"
+            ? "bg-gray-800 border-gray-600"
+            : "bg-white border-gray-300"
+            } border rounded-xl shadow-lg z-10`}
         >
           {options?.map((item, index) => (
             <div
               key={item.id}
-              className={`py-2 px-3 text-lg cursor-pointer ${
-                theme === "dark"
-                  ? "text-gray-200 hover:bg-gray-700"
-                  : "text-black hover:bg-gray-100"
-              } ${index === 0 ? "rounded-t-xl" : ""} ${
-                index === options.length - 1 ? "rounded-b-xl" : ""
-              }`}
+              className={`py-2 px-3 text-lg cursor-pointer ${theme === "dark"
+                ? "text-gray-200 hover:bg-gray-700"
+                : "text-black hover:bg-gray-100"
+                } ${index === 0 ? "rounded-t-xl" : ""} ${index === options.length - 1 ? "rounded-b-xl" : ""
+                }`}
               onClick={() => handleOptionClick(item.id)}
             >
               {item.name}

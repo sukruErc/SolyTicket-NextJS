@@ -241,12 +241,12 @@ const Signup: React.FC = () => {
             <div>
               <Image src={Logo} alt="" className="block" />
             </div>
-            <h5>Hesabınızı Kaydedin</h5>
+            <h5 className="text-black">Hesabınızı Kaydedin</h5>
 
             <form onSubmit={handleSubmit} className="text-start my-8">
               <div className="mb-5">
                 <h6>
-                  <label htmlFor="name" className="form-label">
+                  <label htmlFor="name" className="form-label text-black">
                     Ad Soyad
                   </label>
                 </h6>
@@ -262,7 +262,7 @@ const Signup: React.FC = () => {
               </div>
               <div className="mb-5">
                 <h6>
-                  <label htmlFor="email" className="form-label">
+                  <label htmlFor="email" className="form-label text-black">
                     E-posta
                   </label>
                 </h6>
@@ -278,7 +278,7 @@ const Signup: React.FC = () => {
               </div>
               <div className="mb-5">
                 <h6>
-                  <label htmlFor="phone" className="form-label">
+                  <label htmlFor="phone" className="form-label text-black">
                     Telefon
                   </label>
                 </h6>
@@ -298,7 +298,7 @@ const Signup: React.FC = () => {
               </div>
               <div className="mb-5">
                 <h6>
-                  <label htmlFor="birthday" className="form-label">
+                  <label htmlFor="birthday" className="form-label text-black">
                     Doğum Tarihi
                   </label>
                 </h6>
@@ -313,7 +313,7 @@ const Signup: React.FC = () => {
               </div>
               <div className="mb-5">
                 <h6>
-                  <label htmlFor="password" className="form-label">
+                  <label htmlFor="password" className="form-label text-black">
                     Şifre
                   </label>
                 </h6>
@@ -332,7 +332,7 @@ const Signup: React.FC = () => {
               </div>
               <div className="mb-5">
                 <h6>
-                  <label htmlFor="confirmPassword" className="form-label">
+                  <label htmlFor="confirmPassword" className="form-label text-black">
                     Şifreyi Onaylayın
                   </label>
                 </h6>
@@ -360,9 +360,8 @@ const Signup: React.FC = () => {
               <div className="my-8">
                 <button
                   type="submit"
-                  className={`BlueButton w-full ${
-                    !isFormValid ? "bg-gray-400 cursor-not-allowed" : ""
-                  }`}
+                  className={`BlueButton w-full ${!isFormValid ? "bg-gray-400 cursor-not-allowed" : ""
+                    }`}
                   disabled={!isFormValid}
                 >
                   Kaydol
@@ -371,13 +370,12 @@ const Signup: React.FC = () => {
             </form>
             <div>
               {pathname !== "/login" && (
-                <p>
+                <p className="text-black">
                   Hesabınız yok mu?{" "}
                   <span className="font-bold">
                     <Link
-                      className={`link ${
-                        pathname === "/login" ? "active" : ""
-                      }`}
+                      className={`link ${pathname === "/login" ? "active" : ""
+                        }`}
                       href="/login"
                     >
                       Giriş Yap

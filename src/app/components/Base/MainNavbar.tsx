@@ -31,7 +31,7 @@ const MainNavbar = (props: MainNavbarProps) => {
   );
 
   const locationOptions =
-    (props.locations.length > 0 &&
+    (props.locations?.length > 0 &&
       props.locations?.map((item: IdNameQuery) => ({
         value: item.id,
         label: item.name,

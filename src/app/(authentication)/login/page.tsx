@@ -163,13 +163,13 @@ const Login: React.FC = () => {
             <div>
               <Image src={Logo} alt="" className="block" />
             </div>
-            <h5>Giriş</h5>
-            <p>Lütfen hesabınıza giriş yapın</p>
+            <h5 className="text-black">Giriş</h5>
+            <p className="text-black">Lütfen hesabınıza giriş yapın</p>
 
             <form onSubmit={handleSubmit} className="text-start my-8">
               <div className="mb-5">
                 <h6>
-                  <label htmlFor="EmailAddress" className="form-label">
+                  <label htmlFor="EmailAddress" className="form-label text-black">
                     Email
                   </label>
                 </h6>
@@ -186,7 +186,7 @@ const Login: React.FC = () => {
               </div>
               <div className="mb-5">
                 <h6>
-                  <label htmlFor="LoginPassword" className="form-label">
+                  <label htmlFor="LoginPassword" className="form-label text-black">
                     Şifre
                   </label>
                 </h6>
@@ -210,9 +210,8 @@ const Login: React.FC = () => {
               </div>
               <div className="my-8">
                 <button
-                  className={`BlueButton w-full ${
-                    isFormValid ? "" : "bg-gray-400 cursor-not-allowed"
-                  }`}
+                  className={`BlueButton w-full ${isFormValid ? "" : "bg-gray-400 cursor-not-allowed"
+                    }`}
                   type="submit"
                   disabled={!isFormValid}
                 >
@@ -222,7 +221,7 @@ const Login: React.FC = () => {
             </form>
 
             <div>
-              <p>
+              <p className="text-black">
                 Hesabınız yok mu?{" "}
                 <span className="font-bold">
                   <Link

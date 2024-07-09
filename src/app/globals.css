@@ -2,62 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-
-
-*{
+* {
   /* border: 1px solid blue !important; */
 }
 
 /* styles/global.css */
 :root {
-  --background-color:0,
-    0,
-    0;
+  --background-color: 0, 0, 0;
   --text-color: rgb(var(--foreground-rgb));
   --background-start-rgb: 214, 219, 220;
-    --background-end-rgb: 255, 255, 255;
-    --color-text-primary: #17161A;
-      --color-text-secondary: #17161A;
-      --hero-background-image: url(./assets/images/hero\ background.png);
+  --background-end-rgb: 255, 255, 255;
+  --color-text-primary: #17161A;
+    --color-text-input: #17161A;
+  --color-text-secondary: #17161A;
+  --hero-background-image: url(./assets/images/hero\ background.png);
 }
-
 
 [data-theme='dark'] {
   --background-color: #17161A;
-  --text-color: 255,
-    255,
-    255;
-    --color-text-primary: #fff;
-      --color-text-secondary: #fff;
-      --hero-background-image: url(./assets/images/hero\ background-dark.png);
+  --text-color: 255, 255, 255;
+  --color-text-primary: #fff;
+  --color-text-input: #17161A;
+  --color-text-secondary: #fff;
+  --hero-background-image: url(./assets/images/hero\ background-dark.png);
 }
 
 body {
   background-color: var(--background-color);
   color: var(--color-text-primary);
 }
-/* :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-} */
-
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-} */
-
-/* body {
-  color: rgb(var(--foreground-rgb));
-  background:#ffffff ;
-
-} */
 
 @layer utilities {
   .text-balance {
@@ -69,60 +44,65 @@ body {
   h1 {
     font-size: 90px;
     font-weight: 700;
-    line-height: 80px
+    line-height: 80px;
   }
+
   h2 {
     font-size: 46px;
     font-weight: 600;
   }
-  h3{
+
+  h3 {
     font-size: 36px;
     font-weight: 600;
     color: var(--color-text-primary);
-
   }
-  h4{
+
+  h4 {
     font-size: 20px;
     font-weight: 200;
   }
-  h5{
+
+  h5 {
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--color-text-primary);
   }
-  h6{
+
+  h6 {
     color: var(--color-text-primary);
     font-size: 15px;
     font-weight: 600;
   }
-     p {
-       color: var(--color-text-primary);
-     }
 
-  img{
-    display: inline-block !important;
-
+  p {
+    color: var(--color-text-primary);
   }
 
-  .navbarSelects{
+  img {
+    display: inline-block !important;
+  }
+
+  .navbarSelects {
     padding-right: 28px !important;
   }
 
-
-  @media screen and (max-width: 576px){
-    h1{
+  @media screen and (max-width: 576px) {
+    h1 {
       font-size: 50px;
       line-height: normal;
     }
-    h3{
+
+    h3 {
       font-size: 25px;
     }
-    h4{
+
+    h4 {
       font-size: 15px;
     }
   }
-  /* ... */
 }
+
 @layer components {
   .cardzila {
     background-color: theme('colors.black');
@@ -130,44 +110,56 @@ body {
     padding: theme('spacing.6');
     box-shadow: theme('boxShadow.xl');
   }
-  .BlueButton{
-    background-color: #4E43F1;
+
+  .BlueButton {
+    background-color: #4e43f1;
     padding: 15px 40px;
     color: #ffffff;
     border-radius: 4px;
   }
-  .whiteButton{
-    border: 2px solid #4E43F1;
+
+  .whiteButton {
+    border: 2px solid #4e43f1;
     background-color: white;
     padding: 15px 40px;
-    color: #4E43F1;
+    color: #4e43f1;
     border-radius: 4px;
     font-weight: 600;
   }
-  .HeroSection{
+
+  .HeroSection {
     background-image: var(--hero-background-image);
     background-position: right center;
     background-repeat: no-repeat;
     background-size: cover;
-    /* background: #17161A; */
-    /* background: #4E43F11A; */
-    /* background: #4E43F10D; */
   }
 
-  .newInput{
+  .newInput {
     border-radius: 8px;
     border: 1px 0px 0px 0px;
-    border: 1px solid #4E43F126;
+    border: 1px solid #4e43f126;
     width: 100%;
     padding: 13px 20px;
     margin-top: 10px;
     background-color: transparent;
+    color: var(--color-text-input);
+    /* Add text color */
   }
-  .borderBottom{
-    border-bottom: 1px solid #17161A;
-  }
-  .subHeadingText{
-    font-weight: 500;
 
+  .dark .newInput {
+    background-color: #1a202c;
+    /* Dark background color */
+    color: #000000;
+    /* Light text color for dark mode */
+    border-color: #4e43f126;
+    /* Adjust border color for dark mode */
+  }
+
+  .borderBottom {
+    border-bottom: 1px solid #17161a;
+  }
+
+  .subHeadingText {
+    font-weight: 500;
   }
 }

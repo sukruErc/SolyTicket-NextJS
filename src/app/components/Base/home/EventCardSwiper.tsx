@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { EventsCardData } from "../../../assets/data/swiperData";
-import EventCard from "../../../components/Base/EventCard";
+import EventCard from "../EventCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import viewAllIcon from "@/app/assets/svg/ViewAllIcon.svg";
 

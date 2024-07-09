@@ -1,16 +1,26 @@
-import React, { useState, useRef, useEffect } from "react";
+
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { FaSearch } from "react-icons/fa"; // Import search icon
 import Image from "next/image";
 import useDebounce from "@/app/base/hooks/useDebounce";
 import { HomepageApi } from "@/app/api/homepage";
 import LocalImage from "@/../../public/images/gon-freecss-from-hunter-1f.jpg";
 import { useRouter } from "next/navigation";
+import ThemeContext from "@/app/context/ThemeContext";
 
 interface SearchBarProps {
   placeholder: string;
 }
 
 const SearchBar = (props: SearchBarProps) => {
+  // const { theme } = useContext(ThemeContext);
+  const themeContext = useContext(ThemeContext);
+
+  if (!themeContext) {
+    throw new Error("SolySelect must be used within a ThemeProvider");
+  }
+
+  const { theme } = themeContext;
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const router = useRouter();
@@ -92,22 +102,35 @@ const SearchBar = (props: SearchBarProps) => {
 
   return (
     <div className="relative" ref={searchRef}>
-      <div className="flex items-center border border-gray-300 rounded-md p-2 w-full">
-        <FaSearch className="mr-2 text-gray-400" />
+      <div
+        className={`flex items-center border rounded-md p-2 w-full ${theme === "dark"
+          ? "border-gray-600 bg-gray-800 text-gray-200"
+          : "border-gray-300 bg-white text-gray-700"
+          }`}
+      >
+        <FaSearch
+          className={`mr-2 ${theme === "dark" ? "text-gray-400" : "text-gray-500"
+            }`}
+        />
         <input
           type="text"
           placeholder={props.placeholder}
           value={searchTerm}
           onChange={handleSearch}
-          className="border-none outline-none w-full"
+          className={`border-none outline-none w-full ${theme === "dark" ? "bg-gray-800 text-gray-200" : "bg-white text-gray-700"
+            }`}
         />
       </div>
       {results.length > 0 && (
-        <div className="absolute bg-white border border-gray-300 mt-1 w-full rounded-md shadow-lg max-h-64 overflow-y-auto custom-scrollbar">
+        <div
+          className={`absolute mt-1 w-full rounded-md shadow-lg max-h-64 overflow-y-auto custom-scrollbar ${theme === "dark" ? "bg-gray-800 border-gray-600" : "bg-white border-gray-300"
+            }`}
+        >
           {results.map((result, index) => (
             <div
               key={index}
-              className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
+              className={`flex items-center p-2 cursor-pointer ${theme === "dark" ? "hover:bg-gray-700 text-gray-200" : "hover:bg-gray-100 text-gray-700"
+                }`}
               onClick={() => handleResultClick(result)}
             >
               {result.image && (
@@ -144,6 +167,18 @@ const SearchBar = (props: SearchBarProps) => {
 
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: #555;
+        }
+
+        .dark .custom-scrollbar::-webkit-scrollbar-track {
+          background: #2d3748;
+        }
+
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #4a5568;
+        }
+
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #2d3748;
         }
       `}</style>
     </div>

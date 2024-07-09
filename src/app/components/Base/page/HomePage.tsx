@@ -2,18 +2,18 @@ import { NextPage } from "next";
 import { Suspense, lazy } from "react";
 
 const HeroSection = lazy(
-  () => import("@/app/(events)/home/components/HeroSection")
+  () => import("@/app/components/Base/home/HeroSection")
 );
 const VenuesAroundYou = lazy(
-  () => import("@/app/(events)/home/components/venuesAroundYou")
+  () => import("@/app/components/Base/home/venuesAroundYou")
 );
 const UpcommingEvents = lazy(
-  () => import("@/app/(events)/home/components/UpcommingEvents")
+  () => import("@/app/components/Base/home/UpcommingEvents")
 );
-const Guides = lazy(() => import("@/app/(events)/home/components/guides"));
+const Guides = lazy(() => import("@/app/components/Base/home/guides"));
 const Footer = lazy(() => import("@/app/components/Base/Footer"));
 const EventCardSwiper = lazy(
-  () => import("@/app/(events)/home/components/EventCardSwiper")
+  () => import("@/app/components/Base/home/EventCardSwiper")
 );
 const MainNavbar = lazy(() => import("../MainNavbar"));
 

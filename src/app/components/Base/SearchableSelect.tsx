@@ -1,5 +1,8 @@
-import React from "react";
+"use client";
+
+import React, { useContext } from "react";
 import Select from "react-select";
+import ThemeContext from "@/app/context/ThemeContext";
 
 interface SearchableSelectProps {
   name: string;
@@ -10,7 +13,7 @@ interface SearchableSelectProps {
   instanceId?: string; // Optional instanceId prop for consistent ID generation
 }
 
-const customStyles = {
+const customStyles = (theme: string) => ({
   container: (provided: any) => ({
     ...provided,
     width: "30%", // Adjust the width as per your requirement
@@ -26,11 +29,18 @@ const customStyles = {
     "&:hover": {
       border: state.isFocused || state.hasValue ? "2px solid #4E43F1" : "none", // Add border on hover when focused or has value
     },
-    backgroundColor: state.isFocused ? "#f9f9f9" : "white", // Change background color on focus
+    backgroundColor: state.isFocused
+      ? theme === "dark"
+        ? "#2d3748"
+        : "#f9f9f9"
+      : theme === "dark"
+        ? "#1a202c"
+        : "white", // Change background color on focus
+    color: theme === "dark" ? "#cbd5e0" : "#333",
   }),
   dropdownIndicator: (provided: any) => ({
     ...provided,
-    color: "#999", // Change color to match the example
+    color: theme === "dark" ? "#cbd5e0" : "#999", // Change color to match the example
     padding: "0", // Remove padding
   }),
   indicatorSeparator: () => ({
@@ -39,30 +49,40 @@ const customStyles = {
   singleValue: (provided: any) => ({
     ...provided,
     fontWeight: "bold", // Make the text bold
+    color: theme === "dark" ? "#cbd5e0" : "#333",
   }),
   valueContainer: (provided: any) => ({
     ...provided,
     padding: "0", // Remove default padding
+    color: theme === "dark" ? "#cbd5e0" : "#333",
   }),
   input: (provided: any) => ({
     ...provided,
     margin: "0", // Remove margin
     padding: "0", // Remove padding
+    color: theme === "dark" ? "#cbd5e0" : "#333",
   }),
   menu: (provided: any) => ({
     ...provided,
     border: "none", // Remove border from the menu
     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)", // Add shadow to the dropdown menu
+    backgroundColor: theme === "dark" ? "#1a202c" : "white", // Adjust menu background color for dark mode
   }),
   option: (provided: any, state: any) => ({
     ...provided,
     padding: "0.5rem", // Tailwind padding class equivalent to p-2
     backgroundColor: state.isSelected
-      ? "#f0f0f0"
+      ? theme === "dark"
+        ? "#2d3748"
+        : "#f0f0f0"
       : state.isFocused
-      ? "#f9f9f9"
-      : "white", // Add background color on hover and selection
-    color: "#333", // Text color
+        ? theme === "dark"
+          ? "#2d3748"
+          : "#f9f9f9"
+        : theme === "dark"
+          ? "#1a202c"
+          : "white", // Add background color on hover and selection
+    color: theme === "dark" ? "#cbd5e0" : "#333", // Text color
     "&:hover": {
       backgroundColor: "#4E43F1", // Change background color on hover
       color: "white", // Change text color on hover
@@ -72,10 +92,17 @@ const customStyles = {
     ...provided,
     fontWeight: "bold", // Make the placeholder text bold
     display: state.isFocused ? "none" : "block", // Hide placeholder when focused
+    color: theme === "dark" ? "#a0aec0" : "#999", // Adjust placeholder color for dark mode
   }),
-};
+});
 
 const SearchableSelect = (props: SearchableSelectProps) => {
+  const themeContext = useContext(ThemeContext);
+
+  if (!themeContext) {
+    throw new Error("SolySelect must be used within a ThemeProvider");
+  }
+  const { theme } = themeContext;
   const handleChange = (selectedOption: any) => {
     if (props.onOptionSelect) {
       if (selectedOption) {
@@ -93,7 +120,7 @@ const SearchableSelect = (props: SearchableSelectProps) => {
 
   return (
     <Select
-      styles={customStyles}
+      styles={customStyles(theme)}
       classNamePrefix="react-select"
       name={props.name}
       options={props.options}
