@@ -83,6 +83,10 @@ const getLocationsForHomepage = async (): Promise<LocationsForHomepage[]> => {
   }
 };
 
+function delay(ms: any) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 const HomePage: React.FC = async () => {
   const homePageValues = await getHomePageValues();
   const categoryItems = await getCategoryItems();

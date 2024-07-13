@@ -62,6 +62,11 @@ const AllEvents: React.FC<{
     return "Etkinlikler";
   };
 
+
+  function delay(ms: any) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  // await delay(10000)
   const title = getTitle();
 
   return (

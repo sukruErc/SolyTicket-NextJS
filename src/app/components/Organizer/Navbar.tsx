@@ -61,14 +61,14 @@ const MainNavbar = (props: NavbarProps) => {
             <Link
               className={`link ${pathname === "/login" ? "active" : ""
                 } block rounded-md py-3.5 text-sm font-medium  transition`}
-              href="/login"
+              href="/my-events"
             >
               Etkinliklerim
             </Link>
             <Link
               className={`link ${pathname === "/login" ? "active" : ""
                 } block rounded-md py-3.5 text-sm font-medium  transition`}
-              href="/login"
+              href="/create-event"
             >
               Etkinlik Oluştur
             </Link>
