@@ -1,26 +1,40 @@
-# Use the official Node.js 14 image as the base image
-FROM node:20
+# Stage 1: Build
+FROM node:18-alpine AS builder
 
-# Set the working directory inside the container
+# Install build tools to compile native dependencies
+RUN apk add --no-cache \
+  g++ \
+  make \
+  python3
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies, including sharp
 RUN npm install
 
-# Copy the rest of the application code to the working directory
 COPY . .
+
+ARG NEXT_PUBLIC_ENDPOINT_BASE
+ENV NEXT_PUBLIC_ENDPOINT_BASE=$NEXT_PUBLIC_ENDPOINT_BASE
+
 
 # Build the Next.js application
 RUN npm run build
 
-# Expose port 3000
+# Stage 2: Run
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app ./
+
+# Install only production dependencies
+RUN npm ci --only=production
+
+# Expose the port that the app runs on
 EXPOSE 3000
 
-# Make the entrypoint script executable
-RUN chmod +x entrypoint.sh
-
-# Set the entrypoint to run the entrypoint script
-ENTRYPOINT ["./entrypoint.sh"]
+# Define the command to run the application
+CMD ["npm", "start"]

@@ -31,6 +31,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = async (
 ) => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
+      {/* <p>{props.locations ? props.locations[0].name : ""}</p> */}
       <MainNavbar
         // categoryItems={props.categoryItems ?? []}
         locations={props.locations ?? []}
