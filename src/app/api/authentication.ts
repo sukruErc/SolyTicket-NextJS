@@ -13,7 +13,7 @@ export class AuthApi extends ClientProxy {
   public async createAccount(
     data: CreateAccountModels
   ): Promise<ApiResponse<CreateAccountResponse>> {
-    this.props.url = "users/signup";
+    this.props.url = "users/signup-keycloack";
     return await this.postAsync<ApiResponse<CreateAccountResponse>>(data);
   }
 
@@ -26,10 +26,15 @@ export class AuthApi extends ClientProxy {
 
   public async verifyAccount(
     userId: string,
-    code: string
+    code: string,
+    password: string
   ): Promise<ApiResponse<verifyResponse>> {
     this.props.url = "users/verify";
-    return await this.postAsync<ApiResponse<verifyResponse>>({ userId, code });
+    return await this.postAsync<ApiResponse<verifyResponse>>({
+      userId,
+      code,
+      password,
+    });
   }
 
   public async requestPasswordReset(

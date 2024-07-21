@@ -177,23 +177,31 @@ const Signup: React.FC = () => {
           document.getElementById("swal-input1") as HTMLInputElement
         ).value;
         const authApi = new AuthApi({});
-        const res = await authApi.verifyAccount(userId, code);
+        const res = await authApi.verifyAccount(
+          userId,
+          code,
+          formData.password
+        );
         if (!res.success) {
           Swal.showValidationMessage(
             "Doğrulama başarısız oldu. Lütfen tekrar deneyin."
           );
         }
         const token = res.data as any;
-        const decoded: any = jwtDecode(token);
 
-        ClientStorage.setItem(ConfigHelper.SOLY_USER_ROLE, decoded.role);
+        ClientStorage.setItem(ConfigHelper.SOLY_USER_ROLE, token.role);
         ClientStorage.setItem(
           ConfigHelper.SOLY_USER_TOKEN_CREATE_TIME,
           new Date().getTime()
         );
-        ClientStorage.setItem(ConfigHelper.SOLY_USERNAME, decoded.name);
+        ClientStorage.setItem(ConfigHelper.SOLY_USERNAME, token.name);
 
-        ClientStorage.setItem(ConfigHelper.SOLY_USER_ID, decoded.userId);
+        ClientStorage.setItem(ConfigHelper.SOLY_USER_ID, token.userId);
+        ClientStorage.setItem(ConfigHelper.SOLY_USER_TOKEN, token.access_token);
+        ClientStorage.setItem(
+          ConfigHelper.SOLY_USER_REFRESH,
+          token.refresh_token
+        );
         router.push("/");
         return res;
       },
@@ -241,7 +249,7 @@ const Signup: React.FC = () => {
             <div>
               <Image src={Logo} alt="" className="block" />
             </div>
-            <h5 className="text-black">Hesabınızı Kaydedin</h5>
+            <h5 className="text-black pt-3">Hesabınızı Oluşturun</h5>
 
             <form onSubmit={handleSubmit} className="text-start my-8">
               <div className="mb-5">
@@ -272,7 +280,7 @@ const Signup: React.FC = () => {
                   id="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Kullanıcı adı veya e-posta"
+                  placeholder="E-posta"
                   required
                 />
               </div>
@@ -288,7 +296,7 @@ const Signup: React.FC = () => {
                   id="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="(555) 555 55 55"
+                  placeholder="(5**) *** ** **"
                   maxLength={15}
                   required
                 />
@@ -332,7 +340,10 @@ const Signup: React.FC = () => {
               </div>
               <div className="mb-5">
                 <h6>
-                  <label htmlFor="confirmPassword" className="form-label text-black">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="form-label text-black"
+                  >
                     Şifreyi Onaylayın
                   </label>
                 </h6>
@@ -360,8 +371,9 @@ const Signup: React.FC = () => {
               <div className="my-8">
                 <button
                   type="submit"
-                  className={`BlueButton w-full ${!isFormValid ? "bg-gray-400 cursor-not-allowed" : ""
-                    }`}
+                  className={`BlueButton w-full ${
+                    !isFormValid ? "bg-gray-400 cursor-not-allowed" : ""
+                  }`}
                   disabled={!isFormValid}
                 >
                   Kaydol
@@ -374,8 +386,9 @@ const Signup: React.FC = () => {
                   Hesabınız yok mu?{" "}
                   <span className="font-bold">
                     <Link
-                      className={`link ${pathname === "/login" ? "active" : ""
-                        }`}
+                      className={`link ${
+                        pathname === "/login" ? "active" : ""
+                      }`}
                       href="/login"
                     >
                       Giriş Yap

@@ -1,5 +1,6 @@
 import { NextPage } from "next";
 import { Suspense, lazy } from "react";
+import LogoFiller from "../Spinner/LogoFiller";
 
 const HeroSection = lazy(
   () => import("@/app/components/Base/home/HeroSection")
@@ -29,9 +30,44 @@ interface HomePageComponentProps {
 const HomePageComponent: NextPage<HomePageComponentProps> = async (
   props: HomePageComponentProps
 ) => {
+  const overlayStyle = {
+    position: "fixed" as "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 9999,
+    overflow: "hidden", // Prevent scrolling
+  };
+
+  const pageStyle = {
+    height: "100vh",
+    overflow: "hidden", // Prevent scrolling
+  };
+
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      {/* <p>{props.locations ? props.locations[0].name : ""}</p> */}
+    <Suspense
+      fallback={
+        // <div style={pageStyle}>
+        //   <div style={overlayStyle}>
+        //     <LogoFiller />
+        //   </div>
+        //   <HomePageComponent
+        //     categoryItems={props.categoryItems}
+        //     locations={props.locations}
+        //     homePageValues={props.homePageValues}
+        //     recentEvents={props.recentEvents}
+        //     categoryForGuide={props.categoryForGuide}
+        //     locationsForHomepage={props.locationsForHomepage}
+        //   />
+        // </div>
+        <p>asd</p>
+      }
+    >
       <MainNavbar
         // categoryItems={props.categoryItems ?? []}
         locations={props.locations ?? []}
