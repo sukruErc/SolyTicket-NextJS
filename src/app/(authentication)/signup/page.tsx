@@ -177,23 +177,31 @@ const Signup: React.FC = () => {
           document.getElementById("swal-input1") as HTMLInputElement
         ).value;
         const authApi = new AuthApi({});
-        const res = await authApi.verifyAccount(userId, code);
+        const res = await authApi.verifyAccount(
+          userId,
+          code,
+          formData.password
+        );
         if (!res.success) {
           Swal.showValidationMessage(
             "Doğrulama başarısız oldu. Lütfen tekrar deneyin."
           );
         }
         const token = res.data as any;
-        const decoded: any = jwtDecode(token);
 
-        ClientStorage.setItem(ConfigHelper.SOLY_USER_ROLE, decoded.role);
+        ClientStorage.setItem(ConfigHelper.SOLY_USER_ROLE, token.role);
         ClientStorage.setItem(
           ConfigHelper.SOLY_USER_TOKEN_CREATE_TIME,
           new Date().getTime()
         );
-        ClientStorage.setItem(ConfigHelper.SOLY_USERNAME, decoded.name);
+        ClientStorage.setItem(ConfigHelper.SOLY_USERNAME, token.name);
 
-        ClientStorage.setItem(ConfigHelper.SOLY_USER_ID, decoded.userId);
+        ClientStorage.setItem(ConfigHelper.SOLY_USER_ID, token.userId);
+        ClientStorage.setItem(ConfigHelper.SOLY_USER_TOKEN, token.access_token);
+        ClientStorage.setItem(
+          ConfigHelper.SOLY_USER_REFRESH,
+          token.refresh_token
+        );
         router.push("/");
         return res;
       },

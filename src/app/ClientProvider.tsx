@@ -11,9 +11,7 @@ const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <Provider store={store}>
       <MaterialThemeProvider>
-        <CustomThemeProvider>
-          {children}
-        </CustomThemeProvider>
+        <CustomThemeProvider>{children}</CustomThemeProvider>
       </MaterialThemeProvider>
     </Provider>
   );

@@ -1,5 +1,6 @@
 export class ConfigHelper {
   public static SOLY_USER_TOKEN: string = "SOLY_USER_TOKEN";
+  public static SOLY_USER_REFRESH: string = "SOLY_USER_REFRESH";
   public static SOLY_USERNAME: string = "SOLY_USERNAME";
   public static SOLY_USER_TOKEN_CREATE_TIME: string =
     "SOLY_USER_TOKEN_CREATE_TIME";
