@@ -241,7 +241,7 @@ const Signup: React.FC = () => {
             <div>
               <Image src={Logo} alt="" className="block" />
             </div>
-            <h5 className="text-black">Hesabınızı Kaydedin</h5>
+            <h5 className="text-black pt-3">Hesabınızı Oluşturun</h5>
 
             <form onSubmit={handleSubmit} className="text-start my-8">
               <div className="mb-5">
@@ -272,7 +272,7 @@ const Signup: React.FC = () => {
                   id="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Kullanıcı adı veya e-posta"
+                  placeholder="E-posta"
                   required
                 />
               </div>
@@ -288,7 +288,7 @@ const Signup: React.FC = () => {
                   id="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="(555) 555 55 55"
+                  placeholder="(5**) *** ** **"
                   maxLength={15}
                   required
                 />
@@ -332,7 +332,10 @@ const Signup: React.FC = () => {
               </div>
               <div className="mb-5">
                 <h6>
-                  <label htmlFor="confirmPassword" className="form-label text-black">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="form-label text-black"
+                  >
                     Şifreyi Onaylayın
                   </label>
                 </h6>
@@ -360,8 +363,9 @@ const Signup: React.FC = () => {
               <div className="my-8">
                 <button
                   type="submit"
-                  className={`BlueButton w-full ${!isFormValid ? "bg-gray-400 cursor-not-allowed" : ""
-                    }`}
+                  className={`BlueButton w-full ${
+                    !isFormValid ? "bg-gray-400 cursor-not-allowed" : ""
+                  }`}
                   disabled={!isFormValid}
                 >
                   Kaydol
@@ -374,8 +378,9 @@ const Signup: React.FC = () => {
                   Hesabınız yok mu?{" "}
                   <span className="font-bold">
                     <Link
-                      className={`link ${pathname === "/login" ? "active" : ""
-                        }`}
+                      className={`link ${
+                        pathname === "/login" ? "active" : ""
+                      }`}
                       href="/login"
                     >
                       Giriş Yap

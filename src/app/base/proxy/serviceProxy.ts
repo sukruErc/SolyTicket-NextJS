@@ -18,6 +18,10 @@ function getRequestHeaders(
 ) {
   const headers: any = {
     // OperationName: operationName,
+    //cros
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"
   };
 
   // if (clientProps) {
@@ -33,7 +37,8 @@ function getRequestHeaders(
   // }
 
   headers["Content-Type"] = "application/json; charset=utf-8";
-  axios.defaults.headers.common.Authorization = `Bearer ${getToken()}`;
+
+  // axios.defaults.headers.common.Authorization = `Bearer ${getToken()}`;
 
   // if (isRefreshTime()) {
   //   headers.RefreshToken = getRefreshToken();

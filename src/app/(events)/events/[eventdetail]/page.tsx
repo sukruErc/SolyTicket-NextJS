@@ -28,6 +28,7 @@ interface EventPageProps {
 const fetchDetail = async (
   eventId: string | undefined
 ): Promise<Event | undefined> => {
+  console.log("eventId", eventId);
   const eventApi = new EventsApi({});
   const res = await eventApi.getEventById(eventId as string);
 
@@ -47,6 +48,7 @@ const eventdetail = async ({ params }: EventPageProps) => {
   //   const pathname = usePathname();
   // const userId = ClientStorage.getItem(ConfigHelper.SOLY_USER_ID);
   const event = await fetchDetail(params.eventdetail);
+  console.log("event", event);
   const SimilarEvents = await fetchSimilar(params.eventdetail);
 
   return (
