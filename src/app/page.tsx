@@ -88,7 +88,7 @@ function delay(ms: any) {
 }
 
 const HomePage: React.FC = async () => {
-  const homePageValues = await getHomePageValues();
+  // const homePageValues = await getHomePageValues();
   const categoryItems = await getCategoryItems();
   const locations = await getLocations();
   const recentEvents = await getRecentEvents();
@@ -99,7 +99,7 @@ const HomePage: React.FC = async () => {
     <HomePageComponent
       categoryItems={categoryItems}
       locations={locations}
-      homePageValues={homePageValues}
+      // homePageValues={homePageValues}
       recentEvents={recentEvents}
       categoryForGuide={categoryForGuide}
       locationsForHomepage={locationsForHomepage}

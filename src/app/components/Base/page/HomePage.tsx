@@ -1,3 +1,4 @@
+import { HomepageApi } from "@/app/api/homepage";
 import { NextPage } from "next";
 import { Suspense, lazy } from "react";
 import LogoFiller from "../Spinner/LogoFiller";
@@ -19,14 +20,32 @@ const EventCardSwiper = lazy(
 const MainNavbar = lazy(() => import("../MainNavbar"));
 
 interface HomePageComponentProps {
-  homePageValues: HomepageValuesResponse;
+  // homePageValues: HomepageValuesResponse;
   categoryItems: IdNameQuery[];
   locations: IdNameQuery[];
   recentEvents: Event[];
   categoryForGuide: CategoryWithCount[];
   locationsForHomepage: LocationsForHomepage[];
 }
-
+const getHomePageValues = async (): Promise<HomepageValuesResponse> => {
+  try {
+    const homepageApi = new HomepageApi({});
+    const res = await homepageApi.getHomePageValues();
+    return (
+      res.data || {
+        ticketSoldCount: 0,
+        totalCustomerCount: 0,
+        upcomingEventsCount: 0,
+      }
+    );
+  } catch (error) {
+    return {
+      ticketSoldCount: 0,
+      totalCustomerCount: 0,
+      upcomingEventsCount: 0,
+    };
+  }
+};
 const HomePageComponent: NextPage<HomePageComponentProps> = async (
   props: HomePageComponentProps
 ) => {
@@ -76,7 +95,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = async (
         categoryItems={props.categoryItems ?? [{ id: "", name: "" }]}
         locations={props.locations ?? []}
         homePageValues={
-          props.homePageValues ?? {
+          homePageValues ?? {
             ticketSoldCount: 0,
             totalCustomerCount: 0,
             upcomingEventsCount: 0,

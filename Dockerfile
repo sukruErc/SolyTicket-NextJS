@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Install build tools to compile native dependencies
 RUN apk add --no-cache \
@@ -24,17 +24,17 @@ ENV NEXT_PUBLIC_ENDPOINT_BASE=$NEXT_PUBLIC_ENDPOINT_BASE
 RUN npm run build
 
 # Stage 2: Run
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
 COPY --from=builder /app ./
 
 # Install only production dependencies
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 # Expose the port that the app runs on
-EXPOSE 3000
+#EXPOSE 3000
 
 # Define the command to run the application
 CMD ["npm", "start"]
