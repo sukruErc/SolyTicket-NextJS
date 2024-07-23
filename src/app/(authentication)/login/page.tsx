@@ -53,15 +53,19 @@ const Login: React.FC = () => {
       const res = await authApi.login(formData);
       if (res.success && res.data) {
         const token = res.data as any;
-        const decoded: any = jwtDecode(token);
-
-        ClientStorage.setItem(ConfigHelper.SOLY_USER_ROLE, decoded.role);
+        ClientStorage.setItem(ConfigHelper.SOLY_USER_ROLE, token.role);
         ClientStorage.setItem(
           ConfigHelper.SOLY_USER_TOKEN_CREATE_TIME,
           new Date().getTime()
         );
-        ClientStorage.setItem(ConfigHelper.SOLY_USERNAME, decoded.name);
-        ClientStorage.setItem(ConfigHelper.SOLY_USER_ID, decoded.userId);
+        ClientStorage.setItem(ConfigHelper.SOLY_USERNAME, token.name);
+
+        ClientStorage.setItem(ConfigHelper.SOLY_USER_ID, token.userId);
+        ClientStorage.setItem(ConfigHelper.SOLY_USER_TOKEN, token.access_token);
+        ClientStorage.setItem(
+          ConfigHelper.SOLY_USER_REFRESH,
+          token.refresh_token
+        );
         router.push("/");
       }
     } else {
@@ -119,20 +123,7 @@ const Login: React.FC = () => {
               emailResponse?.data?.resetToken ?? "",
               newPassword
             );
-            if (passwordResponse.success && passwordResponse.data) {
-              const token = passwordResponse.data as any;
-
-              const decoded: any = jwtDecode(token);
-
-              ClientStorage.setItem(ConfigHelper.SOLY_USER_ROLE, decoded.role);
-              ClientStorage.setItem(ConfigHelper.SOLY_USER_ID, decoded.userId);
-              ClientStorage.setItem(ConfigHelper.SOLY_USERNAME, decoded.name);
-              ClientStorage.setItem(
-                ConfigHelper.SOLY_USER_TOKEN_CREATE_TIME,
-                new Date().getTime()
-              );
-              router.push("/");
-
+            if (passwordResponse.success) {
               Swal.fire(
                 "Başarılı!",
                 "Şifreniz başarıyla değiştirildi.",
@@ -209,9 +200,13 @@ const Login: React.FC = () => {
               </div>
               <div className="text-end">
                 <h6>
-                  {/* <a href="#" onClick={handleForgotPassword}>
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    className="hover:text-blue-700  focus:outline-none"
+                  >
                     Şifremi Unuttum?
-                  </a> */}
+                  </button>
                 </h6>
               </div>
               <div className="my-8">
