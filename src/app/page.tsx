@@ -3,6 +3,8 @@
 import React from "react";
 import { HomepageApi } from "@/app/api/homepage";
 import HomePageComponent from "@/app/components/Base/page/HomePage";
+import { ApiResponse } from "./base/models/common-models";
+import { getServiceUrl } from "./base/proxy/serviceRouter";
 
 interface HomePageProps {
   homePageValues: HomepageValuesResponse;
@@ -32,6 +34,24 @@ const getHomePageValues = async (): Promise<HomepageValuesResponse> => {
     };
   }
 };
+
+async function getHomePageValuesV2(): Promise<
+  ApiResponse<HomepageValuesResponse>
+> {
+  try {
+    const baseUrl = getServiceUrl();
+    const url = "homepage/get-homepage-values"
+    const serviceUrl = `${baseUrl}${url}`;
+    const res = await fetch(serviceUrl);
+    const data = await res.json()
+    return data as ApiResponse<HomepageValuesResponse>;
+  } catch (err) {
+    return {
+      success: false,
+      date: new Date()
+    }
+  }
+}
 
 const getRecentEvents = async (): Promise<Event[]> => {
   try {
@@ -87,8 +107,9 @@ function delay(ms: any) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const HomePage: React.FC = async () => {
-  // const homePageValues = await getHomePageValues();
+export const fetchCache = "default-no-store";
+export default async function HomePage() {
+  const homePageValues = await getHomePageValuesV2();
   const categoryItems = await getCategoryItems();
   const locations = await getLocations();
   const recentEvents = await getRecentEvents();
@@ -99,12 +120,14 @@ const HomePage: React.FC = async () => {
     <HomePageComponent
       categoryItems={categoryItems}
       locations={locations}
-      // homePageValues={homePageValues}
+      homePageValues={homePageValues.data || {
+        ticketSoldCount: 0,
+        totalCustomerCount: 0,
+        upcomingEventsCount: 0,
+      }}
       recentEvents={recentEvents}
       categoryForGuide={categoryForGuide}
       locationsForHomepage={locationsForHomepage}
     />
   );
 };
-
-export default HomePage;

@@ -20,7 +20,7 @@ const EventCardSwiper = lazy(
 const MainNavbar = lazy(() => import("../MainNavbar"));
 
 interface HomePageComponentProps {
-  // homePageValues: HomepageValuesResponse;
+  homePageValues: HomepageValuesResponse;
   categoryItems: IdNameQuery[];
   locations: IdNameQuery[];
   recentEvents: Event[];
@@ -76,7 +76,7 @@ const HomePageComponent: NextPage<HomePageComponentProps> = async (
         categoryItems={props.categoryItems ?? [{ id: "", name: "" }]}
         locations={props.locations ?? []}
         homePageValues={
-          homePageValues ?? {
+          props.homePageValues ?? {
             ticketSoldCount: 0,
             totalCustomerCount: 0,
             upcomingEventsCount: 0,
