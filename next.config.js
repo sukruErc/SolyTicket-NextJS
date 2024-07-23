@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+require('dotenv').config()
+
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
@@ -10,7 +12,7 @@ const nextConfig = {
     return [
       {
         source: '/api/v1/:path*',
-        destination: 'http://backend-service:3500/v1/:path*', // Adjust the URL if needed
+        destination: `${process.env.BACKEND_URL ?? "http://backend-service:3500"}/v1/:path*`, // Adjust the URL if needed
       },
     ];
   },

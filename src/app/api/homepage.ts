@@ -2,7 +2,9 @@
 import { ClientProxy } from "../base/proxy/clientProxy";
 import { IRequesterInfo } from "../base/models";
 import { ApiResponse } from "../base/models/common-models";
+import { getServiceUrl } from "../base/proxy/serviceRouter";
 
+export const dynamic = 'force-dynamic';
 export class HomepageApi extends ClientProxy {
   constructor(requesterInfo: IRequesterInfo) {
     super({

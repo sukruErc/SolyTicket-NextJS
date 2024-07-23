@@ -1,6 +1,6 @@
 import { ServiceCallTypeEnum, IClientProxyProps } from "../models";
 import axios, { AxiosPromise, AxiosRequestConfig } from "axios";
-import { ServiceRouter } from "./serviceRouter";
+import { getServiceUrl, ServiceRouter } from "./serviceRouter";
 import { customJsonDateParser } from "../utils";
 import { getToken } from "./helper";
 
@@ -88,7 +88,7 @@ export function Call<T>(
 
   const serviceUrl = hasFullUrl
     ? clientProps.url
-    : `${ServiceRouter.getServiceUrl()}${clientProps.url}`;
+    : `${getServiceUrl()}${clientProps.url}`;
 
   const arrangedRequest = arrangeRequest(request);
   const requestConfig = hasFullUrl

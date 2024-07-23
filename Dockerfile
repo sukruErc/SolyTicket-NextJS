@@ -18,6 +18,8 @@ COPY . .
 
 ARG NEXT_PUBLIC_ENDPOINT_BASE
 ENV NEXT_PUBLIC_ENDPOINT_BASE=$NEXT_PUBLIC_ENDPOINT_BASE
+ARG BACKEND_URL
+ENV BACKEND_URL=$BACKEND_URL
 
 
 # Build the Next.js application
@@ -37,4 +39,4 @@ RUN npm ci --omit=dev
 #EXPOSE 3000
 
 # Define the command to run the application
-CMD ["npm", "start"]
+CMD ["npm", "run" , "start"]

@@ -15,6 +15,7 @@ interface IClientProxyProps {
   requesterInfo?: IRequesterInfo;
 }
 
+export const dynamic = 'force-dynamic';
 export class ClientProxy {
   public props: IClientProxyProps;
   public queryParams: KeyValuePair<any>;
