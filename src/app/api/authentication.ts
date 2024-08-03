@@ -24,6 +24,11 @@ export class AuthApi extends ClientProxy {
     return await this.postAsync<ApiResponse<CreateAccountResponse>>(data);
   }
 
+  public async logout(token: string): Promise<ApiResponse<any>> {
+    this.props.url = "users/logout";
+    return await this.postAsync<ApiResponse<any>>({ token });
+  }
+
   public async verifyAccount(
     userId: string,
     code: string,
